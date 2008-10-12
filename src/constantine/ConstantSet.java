@@ -20,7 +20,6 @@
 
 package constantine;
 
-import constantine.Constant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -47,40 +46,54 @@ public class ConstantSet {
      * @param name The name of the constant set to get.
      * @return A <tt>ConstantSet</tt>.
      */
-    public static ConstantSet getConstants(String name) {
+    public static ConstantSet getConstantSet(String name) {
         ConstantSet constants = constantSets.get(name);
         if (constants == null) {
             synchronized (lock) {
                 if (!constantSets.containsKey(name)) {
-                    constants = new ConstantSet(name);
+                    Class<Enum> enumClass = getEnumClass(name);
+                    if (enumClass == null) {
+                        return null;
+                    }
+                    constants = new ConstantSet(enumClass);
                     constantSets.put(name, constants);
                 }
             }
         }
         return constants;
     }
+
     /**
-     * Creates a new instance of <tt>ConstantSet</tt>
+     * Gets the {@link Enum} class for the constant name space.
      *
-     * @param name The name of the constants to load (e.g. Errno, Socket)
+     * @param name The name of the constants to locate.
+     * @return A Class.
      */
     @SuppressWarnings("unchecked")
-    private ConstantSet(String name) {
-        nameToConstant = new ConcurrentHashMap<String, Constant>();
-        valueToConstant = new ConcurrentHashMap<Integer, Constant>();
+    private static final Class<Enum> getEnumClass(String name) {
         String[] prefixes = {
             Platform.getPlatform().getPackageName(),
             Platform.getPlatform().getOSPackageName(),
         };
-        Class constClass = null;
-
         for (String prefix : prefixes) {
             try {
-                constClass = Class.forName(prefix + "." + name);
+                return (Class<Enum>) Class.forName(prefix + "." + name).asSubclass(Enum.class);
             } catch (ClassNotFoundException ex) {
             }
         }
-        enumClass = constClass.asSubclass(Enum.class);
+        return null;
+    }
+
+    /**
+     * Creates a new instance of <tt>ConstantSet</tt>
+     *
+     * @param enumClass The Enum subclass to load constants from.
+     */
+    @SuppressWarnings("unchecked")
+    private ConstantSet(Class<Enum> enumClass) {
+        this.enumClass = enumClass;
+        nameToConstant = new ConcurrentHashMap<String, Constant>();
+        valueToConstant = new ConcurrentHashMap<Integer, Constant>();
         constants = Collections.unmodifiableSet((Set<Constant>) EnumSet.allOf(enumClass));
     }
 
