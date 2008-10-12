@@ -36,15 +36,37 @@ public class ConstantSet {
     private final Collection<Constant> constants;
     private final Class<Enum> enumClass;
 
+    private static final ConcurrentMap<String, ConstantSet> constantSets
+            = new ConcurrentHashMap<String, ConstantSet>();
+    private static final Object lock = new Object();
+
+    /**
+     * Gets a <tt>ConstantSet</tt>
+     *
+     * @param name The name of the constant set to get.
+     * @return A <tt>ConstantSet</tt>.
+     */
+    public static ConstantSet getConstants(String name) {
+        ConstantSet constants = constantSets.get(name);
+        if (constants == null) {
+            synchronized (lock) {
+                if (!constantSets.containsKey(name)) {
+                    constants = new ConstantSet(name);
+                    constantSets.put(name, constants);
+                }
+            }
+        }
+        return constants;
+    }
     /**
      * Creates a new instance of <tt>ConstantSet</tt>
      *
      * @param name The name of the constants to load (e.g. Errno, Socket)
      */
     @SuppressWarnings("unchecked")
-    public ConstantSet(String name) {
+    private ConstantSet(String name) {
         nameToConstant = new ConcurrentHashMap<String, Constant>();
-        valueToConstant = new ConcurrentHashMap<Integer, Constant>();        
+        valueToConstant = new ConcurrentHashMap<Integer, Constant>();
         String[] prefixes = {
             Platform.getPlatform().getPackageName(),
             Platform.getPlatform().getOSPackageName(),
@@ -76,6 +98,7 @@ public class ConstantSet {
      * @param name The name of the system constant (e.g. "EINVAL").
      * @return A {@link Constant} instance.
      */
+    @SuppressWarnings("unchecked")
     public Constant getConstant(String name) {
         Constant c = nameToConstant.get(name);
         if (c == null) {

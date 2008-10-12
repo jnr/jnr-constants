@@ -42,9 +42,6 @@ public class Platform {
         return String.format("%s.%s", Platform.class.getPackage().getName(), OS);
     }
 
-    public ConstantSet getConstants(String name) {
-        return new ConstantSet(name);
-    }
     public static final Map<String, String> OS_NAMES = new HashMap<String, String>() {{
             put("Mac OS X", "darwin");
         }
