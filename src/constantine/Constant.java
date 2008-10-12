@@ -18,7 +18,7 @@
  * THE SOFTWARE.
  */
 
-package constantine.platform;
+package constantine;
 
 /**
  * A class that represents a native platform constant

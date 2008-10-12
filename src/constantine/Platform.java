@@ -18,7 +18,7 @@
  * THE SOFTWARE.
  */
 
-package constantine.platform;
+package constantine;
 
 import java.nio.ByteOrder;
 import java.util.HashMap;

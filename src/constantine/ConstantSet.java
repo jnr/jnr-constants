@@ -18,8 +18,9 @@
  * THE SOFTWARE.
  */
 
-package constantine.platform;
+package constantine;
 
+import constantine.Constant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
