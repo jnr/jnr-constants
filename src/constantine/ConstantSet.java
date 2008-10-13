@@ -194,5 +194,11 @@ public class ConstantSet extends AbstractSet<Constant> {
         for (Constant c : errnos) {
             System.out.println(c.name() + "=" + c.value());
         }
+        constantine.platform.Errno errno = constantine.platform.Errno.valueOf(22);
+        System.out.println("errno for 22=" + errno);
+        System.out.println("errno for 101=" + constantine.platform.Errno.valueOf(101));
+        System.out.println("errno for 22=" + constantine.platform.Errno.valueOf(22));
+        System.out.println("EINVAL.value() = " + constantine.platform.Errno.EINVAL.value());
+        System.out.println("E2BIG.value() = " + constantine.platform.Errno.E2BIG.value());
     }
 }
