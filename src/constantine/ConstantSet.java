@@ -20,9 +20,10 @@
 
 package constantine;
 
+import java.util.AbstractSet;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -30,10 +31,10 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Provides forward and reverse lookup for platform constants
  */
-public class ConstantSet {
+public class ConstantSet extends AbstractSet<Constant> {
     private final ConcurrentMap<String, Constant> nameToConstant;
     private final ConcurrentMap<Integer, Constant> valueToConstant;
-    private final Collection<Constant> constants;
+    private final Set<Constant> constants;
     private final Class<Enum> enumClass;
 
     private static final ConcurrentMap<String, ConstantSet> constantSets
@@ -54,6 +55,10 @@ public class ConstantSet {
                     Class<Enum> enumClass = getEnumClass(name);
                     if (enumClass == null) {
                         return null;
+                    }
+                    if (!Constant.class.isAssignableFrom(enumClass)) {
+                        throw new ClassCastException("class for " + name
+                                + " does not implement Constant interface");
                     }
                     constants = new ConstantSet(enumClass);
                     constantSets.put(name, constants);
@@ -94,16 +99,7 @@ public class ConstantSet {
         this.enumClass = enumClass;
         nameToConstant = new ConcurrentHashMap<String, Constant>();
         valueToConstant = new ConcurrentHashMap<Integer, Constant>();
-        constants = Collections.unmodifiableSet((Set<Constant>) EnumSet.allOf(enumClass));
-    }
-
-    /**
-     * Returns a collection of all the constants for this set.
-     *
-     * @return A Collection.
-     */
-    public Collection<Constant> getAll() {
-        return constants;
+        constants = (Set<Constant>) EnumSet.allOf(enumClass);
     }
 
     /**
@@ -116,11 +112,11 @@ public class ConstantSet {
     public Constant getConstant(String name) {
         Constant c = nameToConstant.get(name);
         if (c == null) {
-            c = Constant.class.cast(Enum.valueOf(enumClass, name));
-            if (c == null) {
+            try {
+                nameToConstant.put(name, c = Constant.class.cast(Enum.valueOf(enumClass, name)));
+            } catch (IllegalArgumentException ex) {
                 return null;
             }
-            nameToConstant.put(name, c);
         }
         return c;
     }
@@ -131,7 +127,6 @@ public class ConstantSet {
      * @param name The name of the platform constant to look up (e.g. "EINVAL").
      * @return The integer value of the constant.
      */
-    @SuppressWarnings("unchecked")
     public int getValue(String name) {
         Constant c = getConstant(name);
         return c != null ? c.value() : 0;
@@ -158,5 +153,46 @@ public class ConstantSet {
             valueToConstant.put(value, c);
         }
         return c.name();
+    }
+
+    private final class ConstantIterator implements Iterator<Constant> {
+        private final Iterator<Constant> it;
+        
+        ConstantIterator(Collection<Constant> constants) {
+            this.it = constants.iterator();
+        }
+        public boolean hasNext() {
+            return it.hasNext();
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+        public Constant next() {
+            return it.next();
+        }
+        
+    }
+    @Override
+    public Iterator<Constant> iterator() {
+        return new ConstantIterator(constants);
+    }
+
+    @Override
+    public int size() {
+        return constants.size();
+    }
+
+    @Override
+    public boolean contains(Object o) {
+        return o != null && o.getClass().equals(enumClass);
+    }
+
+    public static void main(String[] args) {
+        ConstantSet errnos = ConstantSet.getConstantSet("Errno");
+        for (Constant c : errnos) {
+            System.out.println(c.name() + "=" + c.value());
+        }
     }
 }
