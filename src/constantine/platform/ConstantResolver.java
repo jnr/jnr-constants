@@ -30,6 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Provides forward and reverse lookup utilities to cross-platform enums
  */
 class ConstantResolver<E extends Enum<E>> {
+    public static final String __UNKNOWN_CONSTANT__ = "__UNKNOWN_CONSTANT__";
     private final Object modLock = new Object();
     private final Class<E> enumType;
     private final Map<Integer, E> reverseLookupMap = new ConcurrentHashMap<Integer, E>();
@@ -79,7 +80,7 @@ class ConstantResolver<E extends Enum<E>> {
                 } catch (IllegalArgumentException ex) {}
             }
         }
-        return Enum.valueOf(enumType, "__UNKNOWN_CONSTANT__");
+        return Enum.valueOf(enumType, __UNKNOWN_CONSTANT__);
     }
     private final ConstantSet getConstants() {
         if (constants == null) {
