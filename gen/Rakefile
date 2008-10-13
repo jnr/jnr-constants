@@ -72,7 +72,6 @@ def gen_xplatform_constants(name, pkg, dir, options = {})
     f.puts "package #{pkg};"
     f.puts "public enum #{name} implements #{ICONSTANT} {";
     constants.values.each_with_index do |c, i|
-#      f.puts "#{c.name}#{i < (constants.size - 1) ? ',' : ';'}"
       f.puts "#{c.name},"
     end
     f.puts "__UNKNOWN_CONSTANT__;"
@@ -88,13 +87,17 @@ end
 const_tasks = []
 [ "Errno" ].each do |name|
   load File.join(File.dirname(__FILE__), "#{name}.rake")
-  task "gen_files_#{name}" do
-    pkg = "#{PLATFORM_PREFIX}.#{JRuby::FFI::Platform::OS}"
-    dir = "#{PLATFORM_DIR}/#{JRuby::FFI::Platform::OS}"
+  pkg = "#{PLATFORM_PREFIX}.#{JRuby::FFI::Platform::OS}"
+  dir = "#{PLATFORM_DIR}/#{JRuby::FFI::Platform::OS}"
+  file "#{dir}/#{name}.java" do
     gen_platform_constants(name, pkg, dir)
+    
+  end
+  file "#{PLATFORM_DIR}/#{name}.java" do
     gen_xplatform_constants(name, PLATFORM_PREFIX, PLATFORM_DIR)
   end
-  const_tasks << "gen_files_#{name}"
+  const_tasks << "#{dir}/#{name}.java"
+  const_tasks << "#{PLATFORM_DIR}/#{name}.java"
 end unless JRuby::FFI::Platform::IS_WINDOWS
 
 
