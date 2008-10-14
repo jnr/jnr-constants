@@ -49,13 +49,20 @@ def gen_platform_constants(name, pkg, dir, options = {})
     f.puts "// Generated #{Time.now}"
     f.puts "package #{pkg};"
     f.puts "public enum #{name} implements #{ICONSTANT} {";
+    sep = nil
     constants.values.each_with_index do |c, i|
       if c.value.nil?
         f.puts "// #{c.name} not defined"
       else
-        f.puts "#{c.name}(#{c.converted_value})#{i < (constants.size - 1) ? ',' : ';'}"
+        if sep
+          f.puts sep
+        else
+          sep = ","
+        end
+        f.print "#{c.name}(#{c.converted_value})"
       end
     end
+    f.puts ";"
     f.puts "private final int value;"
     f.puts "private #{name}(int value) { this.value = value; }"
     f.puts "public final int value() { return value; }"
