@@ -8,6 +8,8 @@ require 'fileutils'
 ICONSTANT = "constantine.Constant"
 PLATFORM_PREFIX = "constantine.platform"
 PLATFORM_DIR = "src/constantine/platform"
+OS_CONSTANTS = [ "Errno", "SocketOption", "AddressFamily", "ProtocolFamily", "Shutdown" ]
+
 arches = [ ]
 arch_options = {}
 
@@ -82,7 +84,7 @@ def gen_xplatform_constants(name, pkg, dir, options = {})
   end
 end
 const_tasks = []
-[ "Errno", "SocketOption", "AddressFamily", "ProtocolFamily", "Shutdown" ].each do |name|
+OS_CONSTANTS.each do |name|
   load File.join(File.dirname(__FILE__), "#{name}.rake")
   pkg = "#{PLATFORM_PREFIX}.#{JRuby::FFI::Platform::OS}"
   dir = "#{PLATFORM_DIR}/#{JRuby::FFI::Platform::OS}"
@@ -98,5 +100,14 @@ const_tasks = []
 end unless JRuby::FFI::Platform::IS_WINDOWS
 
 
-task :default => :build
-task :build => const_tasks
+task :default => :generate
+task :generate => const_tasks
+task :regen => [ :clean, :generate ]
+task :clean do
+  OS_CONSTANTS.each do |name|
+    [ File.join(PLATFORM_DIR, JRuby::FFI::Platform::OS, "#{name}.java"),
+      File.join(PLATFORM_DIR, "#{name}.java") ].each do |file|
+      FileUtils.rm_f(file)
+    end
+  end
+end
