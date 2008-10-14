@@ -50,12 +50,15 @@ def gen_platform_constants(name, pkg, dir, options = {})
     f.puts "package #{pkg};"
     f.puts "public enum #{name} implements #{ICONSTANT} {";
     sep = nil
+    comments = []
     constants.values.each_with_index do |c, i|
       if c.value.nil?
-        f.puts "// #{c.name} not defined"
+        comments << "// #{c.name} not defined"
       else
         if sep
           f.puts sep
+          comments.each {|comm| f.puts "#{comm}" }
+          comments.clear
         else
           sep = ","
         end
@@ -63,6 +66,7 @@ def gen_platform_constants(name, pkg, dir, options = {})
       end
     end
     f.puts ";"
+    comments.each {|comm| f.puts "#{comm}" }
     f.puts "private final int value;"
     f.puts "private #{name}(int value) { this.value = value; }"
     f.puts "public final int value() { return value; }"
