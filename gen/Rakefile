@@ -74,7 +74,6 @@ def gen_xplatform_constants(name, pkg, dir, options = {})
     names.each { |n| f.puts "#{n}," }
     f.puts "__UNKNOWN_CONSTANT__;"
     f.puts "private static final ConstantResolver<#{name}> resolver = ConstantResolver.getResolver(#{name}.class);"
-    f.puts "private volatile Integer value;"
     f.puts "public final int value() { return resolver.intValue(this); }"
     f.puts "public final static #{name} valueOf(int value) { "
     f.puts "    return resolver.valueOf(value);"
@@ -83,7 +82,7 @@ def gen_xplatform_constants(name, pkg, dir, options = {})
   end
 end
 const_tasks = []
-[ "Errno" ].each do |name|
+[ "Errno", "SocketOption", "AddressFamily", "ProtocolFamily", "Shutdown" ].each do |name|
   load File.join(File.dirname(__FILE__), "#{name}.rake")
   pkg = "#{PLATFORM_PREFIX}.#{JRuby::FFI::Platform::OS}"
   dir = "#{PLATFORM_DIR}/#{JRuby::FFI::Platform::OS}"

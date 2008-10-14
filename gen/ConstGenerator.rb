@@ -11,7 +11,12 @@ class ConstGenerator
     @const_names
   end
   def const(name)
-    @const_names << name
+    if name.kind_of?(Array)
+      @const_names.concat(name)
+    else
+      @const_names << name
+    end
+    
   end
   def include(header)
     if header.kind_of?(Array)
