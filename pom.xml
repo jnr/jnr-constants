@@ -44,7 +44,7 @@
                 <exec
                   dir="${basedir}"
                   executable="jruby" failonerror="true">
-                  <arg line="-S rake -f gen/Rakefile regen"/>
+                  <arg line="-S rake -f gen/Rakefile"/>
                 </exec>
               </tasks>
             </configuration>
