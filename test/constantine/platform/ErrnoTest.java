@@ -5,8 +5,9 @@
 
 package constantine.platform;
 
-import constantine.Constant;
-import constantine.ConstantSet;
+import com.kenai.constantine.platform.Errno;
+import com.kenai.constantine.Constant;
+import com.kenai.constantine.ConstantSet;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

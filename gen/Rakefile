@@ -5,9 +5,9 @@ require 'ffi'
 require 'ffi/tools/const_generator'
 require 'fileutils'
 
-ICONSTANT = "constantine.Constant"
-PLATFORM_PREFIX = "constantine.platform"
-PLATFORM_DIR = "src/constantine/platform"
+ICONSTANT = "com.kenai.constantine.Constant"
+PLATFORM_PREFIX = "com.kenai.constantine.platform"
+PLATFORM_DIR = "src/com/kenai/constantine/platform"
 OS_CONSTANTS = [ "Errno", "SocketOption", "AddressFamily", "ProtocolFamily", "Shutdown" ]
 
 arches = [ ]
