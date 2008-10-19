@@ -4,7 +4,7 @@
   <groupId>com.kenai</groupId>
   <artifactId>constantine</artifactId>
   <packaging>jar</packaging>
-  <version>0.2-SNAPSHOT</version>
+  <version>0.2</version>
   <name>constantine</name>
   <description>A set of platform constants (e.g. errno values)</description>
   <url>http://constantine.kenai.com</url>
