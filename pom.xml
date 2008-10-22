@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.kenai.constantine</groupId>
+  <groupId>org.jruby.extras</groupId>
   <artifactId>constantine</artifactId>
   <packaging>jar</packaging>
-  <version>0.3-SNAPSHOT</version>
+  <version>0.2.1</version>
   <name>constantine</name>
   <description>A set of platform constants (e.g. errno values)</description>
   <url>http://constantine.kenai.com</url>
@@ -20,11 +20,16 @@
     <url>https://kenai.com/hg/constantine~mercurial</url>
   </scm>
   <distributionManagement>
-    <repository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>kenai</id>
-      <url>svn:https://kenai.com/svn/constantine~repo</url>
+     <repository>
+      <id>codehaus-jruby-repository</id>
+      <name>JRuby Central Repository</name>
+      <url>dav:https://dav.codehaus.org/repository/jruby</url>
     </repository>
+    <snapshotRepository>
+      <id>codehaus-jruby-snapshot-repository</id>
+      <name>JRuby Central Development Repository</name>
+      <url>dav:https://dav.codehaus.org/snapshots.repository/jruby</url>
+    </snapshotRepository>
   </distributionManagement>
   <repositories>
     <repository>
