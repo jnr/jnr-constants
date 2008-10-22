@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.kenai</groupId>
+  <groupId>com.kenai.constantine</groupId>
   <artifactId>constantine</artifactId>
   <packaging>jar</packaging>
   <version>0.3-SNAPSHOT</version>
@@ -79,40 +79,7 @@
           <target>1.5</target>
         </configuration>
       </plugin>
-      <!--
-      <plugin>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestFile>MANIFEST.MF</manifestFile>
-          </archive>
-        </configuration>
-      </plugin>
-      -->
-      <!--
-      <plugin>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>1.1</version>
-        <executions>
-          <execution>
-            <phase>generate-sources</phase>
-            <configuration>
-              <tasks>
-                <exec
-                  dir="${basedir}"
-                  executable="jruby" failonerror="true">
-                  <arg line="-S rake -f gen/Rakefile"/>
-                </exec>
-              </tasks>
-            </configuration>
-            <goals>
-              <goal>run</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      -->
-      </plugins>
+    </plugins>
     <extensions>
       <extension>
         <groupId>org.jvnet.wagon-svn</groupId>
