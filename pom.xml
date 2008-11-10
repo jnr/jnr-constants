@@ -91,6 +91,10 @@
         <artifactId>wagon-svn</artifactId>
         <version>1.8</version>
       </extension>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-webdav</artifactId>
+      </extension>
     </extensions>
   </build>
   <reporting>
