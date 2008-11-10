@@ -62,15 +62,27 @@ def gen_platform_constants(name, pkg, dir, options = {})
           sep = ","
         end
         f.print "#{c.name}(#{c.converted_value})"
-        unless c.description.nil?
-          f.print "{ public final String toString() { return \"#{c.description}\"; }}"
-        end
       end
     end
     f.puts ";"
+
     comments.each {|comm| f.puts "#{comm}" }
     f.puts "private final int value;"
     f.puts "private #{name}(int value) { this.value = value; }"
+    # Generate the string description table
+    unless constants.values.reject {|c| c.description.nil? }.empty?
+      f.puts "static final class StringTable {"
+      f.puts "  public static final java.util.Map<#{name}, String> descriptions = generateTable();"
+      f.puts "  public static final java.util.Map<#{name}, String> generateTable() {"
+      f.puts "    java.util.Map<#{name}, String> map = new java.util.EnumMap<#{name}, String>(#{name}.class);"
+      constants.values.each do |c|
+        f.puts "  map.put(#{c.name}, \"#{c.description.nil? ? c.name : c.description}\");"
+      end
+      f.puts "    return map;"
+      f.puts "  }"
+      f.puts "}"
+      f.puts "public final String toString() { return StringTable.descriptions.get(this); }"
+    end
     f.puts "public final int value() { return value; }"
     f.puts "}"
   end
@@ -90,6 +102,8 @@ def gen_xplatform_constants(name, pkg, dir, options = {})
     f.puts "__UNKNOWN_CONSTANT__;"
     f.puts "private static final ConstantResolver<#{name}> resolver = ConstantResolver.getResolver(#{name}.class);"
     f.puts "public final int value() { return resolver.intValue(this); }"
+    f.puts "public final String description() { return resolver.description(this); }"
+    f.puts "public final String toString() { return description(); }"
     f.puts "public final static #{name} valueOf(int value) { "
     f.puts "    return resolver.valueOf(value);"
     f.puts "}"
