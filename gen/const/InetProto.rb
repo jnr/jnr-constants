@@ -1,6 +1,6 @@
 require 'gen/ConstGenerator'
 def gen_inetproto_java(options)
-  ConstGenerator.new 'platform.shutdown', options do |cg|
+  ConstGenerator.new 'platform.ipproto', options do |cg|
     cg.include "netinet/in.h"
     cg.const %w[
       IPPROTO_IP
