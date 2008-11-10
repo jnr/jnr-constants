@@ -34,10 +34,9 @@ class ConstantResolver<E extends Enum<E>> {
     private final Object modLock = new Object();
     private final Class<E> enumType;
     private final Map<Integer, E> reverseLookupMap = new ConcurrentHashMap<Integer, E>();
-
-    private Integer[] values = null;
+    private Constant[] cache = null;
+    private volatile int guard;
     private volatile ConstantSet constants;
-    private volatile int valuesGuard = 0;
 
     private ConstantResolver(Class<E> enumType) {
         this.enumType = enumType;
@@ -45,27 +44,27 @@ class ConstantResolver<E extends Enum<E>> {
     static final <T extends Enum<T>> ConstantResolver<T> getResolver(Class<T> enumType) {
         return new ConstantResolver<T>(enumType);
     }
+   
+    private Constant getConstant(E e) {
+        Constant c;
+        if (guard != 0 && (c = cache[e.ordinal()]) != null) { // read volatile guard
+            return c;
+        }
+        // fallthru to slow lookup+add
+         synchronized (modLock) {
+            if (cache == null) {
+                cache = new Constant[EnumSet.allOf(enumType).size()];
+            }
+            cache[e.ordinal()] = c = getConstant(e.name());
+            guard = guard + 1; // write volatile guard
+        }
+        return c;
+    }
     final int intValue(E e) {
-        if (valuesGuard != 0) { // read volatile guard
-            Integer i = values[e.ordinal()];
-            if (i != null) {
-                return i;
-            }
-            // fallthru to slow lookup+add
-        }
-        Integer i;
-        synchronized (modLock) {
-            Constant c = getConstants().getConstant(e.name());
-            if (c == null) {
-                throw new RuntimeException("No platform value for " + e.name());
-            }
-            if (values == null) {
-                values = new Integer[EnumSet.allOf(enumType).size()];
-            }
-            values[e.ordinal()] = (i = c.value());
-            valuesGuard = valuesGuard + 1; // write volatile guard
-        }
-        return i;
+        return getConstant(e).value();
+    }
+    final String description(E e) {
+         return getConstant(e).toString();
     }
     final E valueOf(int value) {
         E e = reverseLookupMap.get(value);
@@ -81,6 +80,13 @@ class ConstantResolver<E extends Enum<E>> {
             }
         }
         return Enum.valueOf(enumType, __UNKNOWN_CONSTANT__);
+    }
+    private final Constant getConstant(String name) {
+        Constant c = getConstants().getConstant(name);
+        if (c == null) {
+            throw new RuntimeException("No platform value for " + name);
+        }
+        return c;
     }
     private final ConstantSet getConstants() {
         if (constants == null) {
