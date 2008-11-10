@@ -7,7 +7,7 @@ require 'fileutils'
 ICONSTANT = "com.kenai.constantine.Constant"
 PLATFORM_PREFIX = "com.kenai.constantine.platform"
 PLATFORM_DIR = "src/com/kenai/constantine/platform"
-OS_CONSTANTS = [ "Errno", "SocketOption", "AddressFamily", "ProtocolFamily", "Shutdown" ]
+OS_CONSTANTS = Dir["gen/*.const"].map {|c| File.basename(c, ".const") }
 
 arches = [ ]
 arch_options = {}
@@ -112,7 +112,7 @@ def gen_xplatform_constants(name, pkg, dir, options = {})
 end
 const_tasks = []
 OS_CONSTANTS.each do |name|
-  load File.join(File.dirname(__FILE__), "#{name}.rake")
+  load File.join(File.dirname(__FILE__), "#{name}.const")
   pkg = "#{PLATFORM_PREFIX}.#{JRuby::FFI::Platform::OS}"
   dir = "#{PLATFORM_DIR}/#{JRuby::FFI::Platform::OS}"
   file "#{dir}/#{name}.java" do
