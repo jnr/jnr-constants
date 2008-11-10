@@ -17,8 +17,10 @@ class ConstGenerator
     else
       @const_names << name
     end
-    
   end
+  def strfunc(name)
+    @options[:to_str] = name
+  end  
   def include(header)
     if header.kind_of?(Array)
       @includes.concat(header)

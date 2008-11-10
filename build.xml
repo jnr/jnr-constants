@@ -66,9 +66,11 @@
     nbproject/build-impl.xml file. 
 
     -->
+    <!--
     <target name="-pre-compile">
         <exec executable="jruby">
             <arg line="-S rake -f gen/Rakefile"/>
         </exec>
     </target>
+    -->
 </project>
