@@ -2,13 +2,15 @@ $VERBOSE = true
 $verbose = Rake.application.options.trace
 
 require 'ffi'
-require 'ffi/tools/const_generator'
 require 'fileutils'
 
 ICONSTANT = "com.kenai.constantine.Constant"
 PLATFORM_PREFIX = "com.kenai.constantine.platform"
 PLATFORM_DIR = "src/com/kenai/constantine/platform"
 OS_CONSTANTS = [ "Errno", "SocketOption", "AddressFamily", "ProtocolFamily", "Shutdown" ]
+CONSTANT_OPTIONS = {
+  "Errno" => { :to_str => "strerror" }
+}
 
 arches = [ ]
 arch_options = {}
@@ -63,6 +65,9 @@ def gen_platform_constants(name, pkg, dir, options = {})
           sep = ","
         end
         f.print "#{c.name}(#{c.converted_value})"
+        unless c.description.nil?
+          f.print "{ public final String toString() { return \"#{c.description}\"; }}"
+        end
       end
     end
     f.puts ";"
@@ -97,14 +102,15 @@ end
 const_tasks = []
 OS_CONSTANTS.each do |name|
   load File.join(File.dirname(__FILE__), "#{name}.rake")
+  options = CONSTANT_OPTIONS[name] || Hash.new
   pkg = "#{PLATFORM_PREFIX}.#{JRuby::FFI::Platform::OS}"
   dir = "#{PLATFORM_DIR}/#{JRuby::FFI::Platform::OS}"
   file "#{dir}/#{name}.java" do
-    gen_platform_constants(name, pkg, dir)
+    gen_platform_constants(name, pkg, dir, options)
     
   end
   file "#{PLATFORM_DIR}/#{name}.java" do
-    gen_xplatform_constants(name, PLATFORM_PREFIX, PLATFORM_DIR)
+    gen_xplatform_constants(name, PLATFORM_PREFIX, PLATFORM_DIR, options)
   end
   const_tasks << "#{dir}/#{name}.java"
   const_tasks << "#{PLATFORM_DIR}/#{name}.java"

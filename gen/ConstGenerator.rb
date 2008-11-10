@@ -1,3 +1,4 @@
+require 'gen/const_generator'
 class ConstGenerator
   def initialize(name = nil, options = {}, &block)
     @constants = nil
@@ -31,7 +32,7 @@ class ConstGenerator
     @constants
   end
   def generate
-    gen = FFI::ConstGenerator.new @name, @options do |cg|
+    gen = Constantine::ConstGenerator.new @name, @options do |cg|
       @includes.each { |header| cg.include header }
       @const_names.each { |c| cg.const c }
     end
