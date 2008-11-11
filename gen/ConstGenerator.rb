@@ -6,6 +6,7 @@ class ConstGenerator
     @includes = []
     @name = name
     @options = options
+    @unknown_range = {}
     yield self if block_given?
   end
   def names
@@ -20,7 +21,16 @@ class ConstGenerator
   end
   def strfunc(name)
     @options[:to_str] = name
-  end  
+  end
+  def strfunc=(name)
+    @options[:to_str] = name
+  end
+  def unknown_range=(range)
+    @unknown_range = { :first => range[0], :last => range[1] }
+  end
+  def unknown_range
+    @unknown_range
+  end
   def include(header)
     if header.kind_of?(Array)
       @includes.concat(header)

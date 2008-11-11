@@ -4,6 +4,7 @@ def gen_errno_java(options)
     cg.include "errno.h"
     cg.include "string.h"
     cg.strfunc "strerror"
+    cg.unknown_range=[10000, 10999]
     consts = %w[
       EPERM
       ENOENT
