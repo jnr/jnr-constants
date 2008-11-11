@@ -1,6 +1,7 @@
 require 'gen/ConstGenerator'
 def gen_inaddr_java(options)
   ConstGenerator.new 'platform.inaddr', options do |cg|
+    cg.include "sys/types.h"
     cg.include "netinet/in.h"
     cg.const %w[
       INADDR_ANY
