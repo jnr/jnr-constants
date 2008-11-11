@@ -1,5 +1,5 @@
 require 'gen/ConstGenerator'
-def gen_inetproto_java(options)
+def gen_ipproto_java(options)
   ConstGenerator.new 'platform.ipproto', options do |cg|
     cg.include "netinet/in.h"
     cg.const %w[

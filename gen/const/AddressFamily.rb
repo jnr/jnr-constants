@@ -43,6 +43,7 @@ def gen_addressfamily_java(options)
       AF_ATM
       pseudo_AF_HDRCMPLT
       AF_NETGRAPH
+      AF_AX25
       AF_MAX
     ]
   end
