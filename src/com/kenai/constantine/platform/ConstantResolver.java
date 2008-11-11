@@ -25,6 +25,7 @@ import com.kenai.constantine.ConstantSet;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Provides forward and reverse lookup utilities to cross-platform enums
@@ -34,28 +35,62 @@ class ConstantResolver<E extends Enum<E>> {
     private final Object modLock = new Object();
     private final Class<E> enumType;
     private final Map<Integer, E> reverseLookupMap = new ConcurrentHashMap<Integer, E>();
+    private final int lastUnknown;
     private Constant[] cache = null;
+    private final AtomicInteger nextUnknown;;
     private volatile int guard;
     private volatile ConstantSet constants;
 
     private ConstantResolver(Class<E> enumType) {
+        this(enumType, Integer.MIN_VALUE, Integer.MIN_VALUE + 1000);
+    }
+    private ConstantResolver(Class<E> enumType, int firstUnknown, int lastUnknown) {
         this.enumType = enumType;
+        this.nextUnknown = new AtomicInteger(firstUnknown);
+        this.lastUnknown = lastUnknown;
     }
     static final <T extends Enum<T>> ConstantResolver<T> getResolver(Class<T> enumType) {
         return new ConstantResolver<T>(enumType);
     }
-   
+    static final <T extends Enum<T>> ConstantResolver<T> getResolver(Class<T> enumType, int first, int last) {
+        return new ConstantResolver<T>(enumType, first, last);
+    }
+    private static final class UnknownConstant implements Constant {
+        private final int value;
+        private final String name;
+        UnknownConstant(int value, String name) {
+            this.value = value;
+            this.name = name;
+        }
+
+        public int value() {
+            return value;
+        }
+
+        public String name() {
+            return name;
+        }
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
     private Constant getConstant(E e) {
         Constant c;
         if (guard != 0 && (c = cache[e.ordinal()]) != null) { // read volatile guard
             return c;
         }
         // fallthru to slow lookup+add
-         synchronized (modLock) {
+        synchronized (modLock) {
             if (cache == null) {
                 cache = new Constant[EnumSet.allOf(enumType).size()];
             }
-            cache[e.ordinal()] = c = getConstant(e.name());
+            c = getConstants().getConstant(e.name());
+            if (c == null) {
+                c = new UnknownConstant(nextUnknown.getAndAdd(1), e.name());
+                reverseLookupMap.put(c.value(), e);
+            }
+            cache[e.ordinal()] = c;
             guard = guard + 1; // write volatile guard
         }
         return c;
@@ -80,13 +115,6 @@ class ConstantResolver<E extends Enum<E>> {
             }
         }
         return Enum.valueOf(enumType, __UNKNOWN_CONSTANT__);
-    }
-    private final Constant getConstant(String name) {
-        Constant c = getConstants().getConstant(name);
-        if (c == null) {
-            throw new RuntimeException("No platform value for " + name);
-        }
-        return c;
     }
     private final ConstantSet getConstants() {
         if (constants == null) {
