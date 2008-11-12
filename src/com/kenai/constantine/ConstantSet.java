@@ -123,6 +123,31 @@ public class ConstantSet extends AbstractSet<Constant> {
     }
 
     /**
+     * Gets the constant for a name.
+     *
+     * @param name The name of the system constant (e.g. "EINVAL").
+     * @return A {@link Constant} instance.
+     */
+    @SuppressWarnings("unchecked")
+    public Constant getConstant(int value) {
+        Constant c = valueToConstant.get(value);
+        if (c == null) {
+            if (c == null) {
+                for (Constant c2 : constants) {
+                    if (c2.value() == value) {
+                        c = c2;
+                        break;
+                    }
+                }
+                if (c != null) {
+                    valueToConstant.put(value, c);
+                }
+            }
+        }
+        return c;
+    }
+
+    /**
      * Gets the integer value of a platform constant.
      *
      * @param name The name of the platform constant to look up (e.g. "EINVAL").
@@ -140,20 +165,8 @@ public class ConstantSet extends AbstractSet<Constant> {
      * @return The name of the constant.
      */
     public String getName(int value) {
-        Constant c = valueToConstant.get(value);
-        if (c == null) {
-            for (Constant c2 : constants) {
-                if (c2.value() == value) {
-                    c = c2;
-                    break;
-                }
-            }
-            if (c == null) {
-                return "unknown";
-            }
-            valueToConstant.put(value, c);
-        }
-        return c.name();
+        Constant c = getConstant(value);
+        return c != null ? c.name() : "unknown";
     }
 
     private final class ConstantIterator implements Iterator<Constant> {
