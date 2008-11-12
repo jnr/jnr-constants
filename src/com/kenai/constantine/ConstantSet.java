@@ -20,6 +20,7 @@
 
 package com.kenai.constantine;
 
+import java.lang.reflect.Field;
 import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.EnumSet;
@@ -27,6 +28,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Provides forward and reverse lookup for platform constants
@@ -36,7 +39,9 @@ public class ConstantSet extends AbstractSet<Constant> {
     private final ConcurrentMap<Integer, Constant> valueToConstant;
     private final Set<Constant> constants;
     private final Class<Enum> enumClass;
-
+    private volatile Integer minValue;
+    private volatile Integer maxValue;
+    
     private static final ConcurrentMap<String, ConstantSet> constantSets
             = new ConcurrentHashMap<String, ConstantSet>();
     private static final Object lock = new Object();
@@ -168,7 +173,30 @@ public class ConstantSet extends AbstractSet<Constant> {
         Constant c = getConstant(value);
         return c != null ? c.name() : "unknown";
     }
-
+    private Integer getIntegerField(String name, int defaultValue) {
+        try {
+            Field f = enumClass.getField("MIN_VALUE");
+            return (Integer) f.get(enumClass);
+        } catch (NoSuchFieldException ex) {
+            return defaultValue;
+        } catch (RuntimeException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+    public int minValue() {
+        if (minValue == null) {
+            minValue = getIntegerField("MIN_VALUE", Integer.MIN_VALUE);
+        }
+        return minValue.intValue();
+    }
+    public int maxValue() {
+        if (maxValue == null) {
+            maxValue = getIntegerField("MAX_VALUE", Integer.MAX_VALUE);
+        }
+        return maxValue.intValue();
+    }
     private final class ConstantIterator implements Iterator<Constant> {
         private final Iterator<Constant> it;
         
