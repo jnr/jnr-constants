@@ -167,7 +167,9 @@ module Constantine
         @value
       end
     end
-
+    def <=>(c)
+      converted_value.to_i <=> c.converted_value.to_i
+    end
     def ruby_name
       @ruby_name || @name
     end
