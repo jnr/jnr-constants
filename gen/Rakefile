@@ -50,6 +50,8 @@ def gen_platform_constants(name, pkg, dir, options = {})
     f.puts "public enum #{name} implements #{ICONSTANT} {";
     sep = nil
     comments = []
+    sorted = constants.values.reject { |c| c.value.nil? }.sort
+    min_value, max_value = sorted.first.value, sorted.last.value
     constants.values.each_with_index do |c, i|
       if c.value.nil?
         comments << "// #{c.name} not defined"
@@ -69,6 +71,9 @@ def gen_platform_constants(name, pkg, dir, options = {})
     comments.each {|comm| f.puts "#{comm}" }
     f.puts "private final int value;"
     f.puts "private #{name}(int value) { this.value = value; }"
+    f.puts "public static final int MIN_VALUE = #{min_value};"
+    f.puts "public static final int MAX_VALUE = #{max_value};"
+    f.puts ""
     # Generate the string description table
     unless constants.values.reject {|c| c.description.nil? }.empty?
       f.puts "static final class StringTable {"
