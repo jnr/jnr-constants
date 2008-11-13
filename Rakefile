@@ -37,7 +37,7 @@ def gen_platform_constants(name, pkg, file_name, options = {})
         else
           sep = ","
         end
-        f.print "#{c.name}(#{c.converted_value})"
+        f.print "#{c.name}(#{c.value})"
       end
     end
     f.puts ";"
@@ -45,8 +45,8 @@ def gen_platform_constants(name, pkg, file_name, options = {})
     comments.each {|comm| f.puts "#{comm}" }
     f.puts "private final int value;"
     f.puts "private #{name}(int value) { this.value = value; }"
-    f.puts "public static final int MIN_VALUE = #{min_value};"
-    f.puts "public static final int MAX_VALUE = #{max_value};"
+    f.puts "public static final long MIN_VALUE = #{min_value};"
+    f.puts "public static final long MAX_VALUE = #{max_value};"
     f.puts ""
     # Generate the string description table
     unless constants.values.reject {|c| c.description.nil? }.empty?

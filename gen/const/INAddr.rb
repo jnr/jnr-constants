@@ -12,6 +12,6 @@ def gen_inaddr_java(options)
       INADDR_ALLHOSTS_GROUP
       INADDR_ALLRTRS_GROUP
       INADDR_MAX_LOCAL_GROUP
-    ].each {|c| cg.const c, "%#x", "(unsigned int)" }
+    ].each {|c| cg.const(c, "%#x", "(unsigned int)") { |v| v.hex} }
   end
 end

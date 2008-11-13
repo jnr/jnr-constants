@@ -39,8 +39,8 @@ public class ConstantSet extends AbstractSet<Constant> {
     private final ConcurrentMap<Integer, Constant> valueToConstant;
     private final Set<Constant> constants;
     private final Class<Enum> enumClass;
-    private volatile Integer minValue;
-    private volatile Integer maxValue;
+    private volatile Long minValue;
+    private volatile Long maxValue;
     
     private static final ConcurrentMap<String, ConstantSet> constantSets
             = new ConcurrentHashMap<String, ConstantSet>();
@@ -173,10 +173,10 @@ public class ConstantSet extends AbstractSet<Constant> {
         Constant c = getConstant(value);
         return c != null ? c.name() : "unknown";
     }
-    private Integer getIntegerField(String name, int defaultValue) {
+    private Long getLongField(String name, long defaultValue) {
         try {
             Field f = enumClass.getField("MIN_VALUE");
-            return (Integer) f.get(enumClass);
+            return (Long) f.get(enumClass);
         } catch (NoSuchFieldException ex) {
             return defaultValue;
         } catch (RuntimeException ex) {
@@ -185,15 +185,15 @@ public class ConstantSet extends AbstractSet<Constant> {
             throw new RuntimeException(ex);
         }
     }
-    public int minValue() {
+    public long minValue() {
         if (minValue == null) {
-            minValue = getIntegerField("MIN_VALUE", Integer.MIN_VALUE);
+            minValue = getLongField("MIN_VALUE", Integer.MIN_VALUE);
         }
         return minValue.intValue();
     }
-    public int maxValue() {
+    public long maxValue() {
         if (maxValue == null) {
-            maxValue = getIntegerField("MAX_VALUE", Integer.MAX_VALUE);
+            maxValue = getLongField("MAX_VALUE", Integer.MAX_VALUE);
         }
         return maxValue.intValue();
     }
