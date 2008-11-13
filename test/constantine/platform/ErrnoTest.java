@@ -64,6 +64,19 @@ public class ErrnoTest {
             assertEquals("Incorrect integer value for " + errno.name() + ",", errno.value(), e.value());
         }
     }
+    @Test public void description() {
+        for (Errno errno : Errno.values()) {
+            if (errno == Errno.__UNKNOWN_CONSTANT__) {
+                continue;
+            }
+            assertNotSame("Lack of description for " + errno.name(), errno.name(), errno.toString());
+        }
+    }
+    @Test public void expected() {
+        for (Errno e : new Errno[] {Errno.ENOENT, Errno.EINVAL, Errno.EISDIR}) {
+            assertNotSame(e.name() + " is unknown", Errno.__UNKNOWN_CONSTANT__, e);
+        }
+    }
     @Test public void unknownConstant() {
         Errno none = Errno.valueOf(~0);
         assertEquals("Incorrect errno for unknown value", Errno.__UNKNOWN_CONSTANT__, none);
