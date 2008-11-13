@@ -9,6 +9,7 @@ module Constantine
   class ConstGenerator
     @options = {}
     attr_reader :constants
+    attr_reader :names
 
     ##
     # Creates a new constant generator that uses +prefix+ as a name, and an
@@ -23,8 +24,9 @@ module Constantine
     def initialize(prefix = nil, options = {})
       @includes = []
       @constants = {}
+      @names = []
       @prefix = prefix
-
+      @unknown_range = { :first => 10000, :last => 19999 }
       @required = options[:required]
       @options = options
 
@@ -63,9 +65,18 @@ module Constantine
 
       const = Constant.new name, format, cast, ruby_name, converter
       @constants[name.to_s] = const
+      @names << name.to_s
       return const
     end
-
+    def strfunc=(strfunc)
+      @options[:to_str] = strfunc.to_s
+    end
+    def unknown_range=(range)
+    @unknown_range = { :first => range[0], :last => range[1] }
+    end
+    def unknown_range
+      @unknown_range
+    end
     def calculate(options = {})
       binary = File.join Dir.tmpdir, "rb_const_gen_bin_#{Process.pid}"
 

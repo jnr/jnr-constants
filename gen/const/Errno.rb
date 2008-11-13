@@ -3,7 +3,7 @@ def gen_errno_java(options)
   ConstGenerator.new 'platform.errno', options do |cg|
     cg.include "errno.h"
     cg.include "string.h"
-    cg.strfunc "strerror"
+    cg.strfunc = "strerror"
     cg.unknown_range=[10000, 10999]
     consts = %w[
       EPERM

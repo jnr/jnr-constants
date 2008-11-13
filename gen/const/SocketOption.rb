@@ -2,7 +2,7 @@ require 'gen/ConstGenerator'
 def gen_socketoption_java(options)
   ConstGenerator.new 'platform.socket_option', options do |cg|
     cg.include "sys/socket.h"
-    cg.const %w[
+    %w[
       SO_DEBUG
       SO_ACCEPTCONN
       SO_REUSEADDR
@@ -45,7 +45,7 @@ def gen_socketoption_java(options)
       SO_SECURITY_AUTHENTICATION
       SO_SECURITY_ENCRYPTION_NETWORK
       SO_SECURITY_ENCRYPTION_TRANSPORT
-    ]
+    ].each {|c| cg.const c, "%#x", "(unsigned int)" }
   end
 end
     

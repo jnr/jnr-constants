@@ -2,7 +2,7 @@ require 'gen/ConstGenerator'
 def gen_ipproto_java(options)
   ConstGenerator.new 'platform.ipproto', options do |cg|
     cg.include "netinet/in.h"
-    cg.const %w[
+    %w[
       IPPROTO_IP
       IPPROTO_HOPOPTS
       IPPROTO_ICMP
@@ -31,6 +31,6 @@ def gen_ipproto_java(options)
       IPPROTO_SCTP
       IPPROTO_RAW
       IPPROTO_MAX
-    ]
+    ].each {|c| cg.const c}
   end
 end

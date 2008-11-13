@@ -2,7 +2,7 @@ require 'gen/ConstGenerator'
 def gen_protocolfamily_java(options)
   ConstGenerator.new 'platform.protocol_family', options do |cg|
     cg.include "sys/socket.h"
-    cg.const %w[
+    %w[
       PF_UNSPEC
       PF_LOCAL
       PF_UNIX
@@ -42,6 +42,6 @@ def gen_protocolfamily_java(options)
       PF_ATM
       PF_NETGRAPH
       PF_MAX
-    ]
+    ].each {|c| cg.const c}
   end
 end
