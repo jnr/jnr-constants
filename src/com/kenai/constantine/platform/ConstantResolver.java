@@ -22,6 +22,7 @@ package com.kenai.constantine.platform;
 
 import com.kenai.constantine.Constant;
 import com.kenai.constantine.ConstantSet;
+import java.lang.reflect.Array;
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,10 +36,12 @@ class ConstantResolver<E extends Enum<E>> {
     private final Object modLock = new Object();
     private final Class<E> enumType;
     private final Map<Integer, E> reverseLookupMap = new ConcurrentHashMap<Integer, E>();
-    private final int lastUnknown;
-    private Constant[] cache = null;
     private final AtomicInteger nextUnknown;;
-    private volatile int guard;
+    private final int lastUnknown;
+
+    private Constant[] cache = null;
+    private volatile E[] valueCache = null;
+    private volatile int cacheGuard = 0;
     private volatile ConstantSet constants;
 
     private ConstantResolver(Class<E> enumType) {
@@ -77,7 +80,7 @@ class ConstantResolver<E extends Enum<E>> {
     }
     private Constant getConstant(E e) {
         Constant c;
-        if (guard != 0 && (c = cache[e.ordinal()]) != null) { // read volatile guard
+        if (cacheGuard != 0 && (c = cache[e.ordinal()]) != null) { // read volatile guard
             return c;
         }
         // fallthru to slow lookup+add
@@ -91,7 +94,7 @@ class ConstantResolver<E extends Enum<E>> {
                 reverseLookupMap.put(c.value(), e);
             }
             cache[e.ordinal()] = c;
-            guard = guard + 1; // write volatile guard
+            cacheGuard = cacheGuard + 1; // write volatile guard
         }
         return c;
     }
@@ -101,18 +104,31 @@ class ConstantResolver<E extends Enum<E>> {
     final String description(E e) {
          return getConstant(e).toString();
     }
+    @SuppressWarnings("unchecked")
     final E valueOf(int value) {
-        E e = reverseLookupMap.get(value);
+        E e;
+        if (value >= 0 && value < 256 && valueCache != null && (e = valueCache[value]) != null) {
+            return e;
+        }
+        e = reverseLookupMap.get(value);
         if (e != null) {
             return e;
         }
-        for (Constant c : getConstants()) {
-            if (c.value() == value) {
-                try {
-                    reverseLookupMap.put(value, e = Enum.valueOf(enumType, c.name()));
-                    return e;
-                } catch (IllegalArgumentException ex) {}
-            }
+        Constant c = getConstants().getConstant(value);
+        if (c != null) {
+            try {
+                e = Enum.valueOf(enumType, c.name());
+                reverseLookupMap.put(value, e);
+                if (c.value() >= 0 && c.value() < 256) {
+                    E[] values = valueCache;
+                    if (values == null) {
+                        values = (E[]) Array.newInstance(enumType, 256);
+                    }
+                    values[c.value()] = e;
+                    valueCache = values;
+                }
+                return e;
+            } catch (IllegalArgumentException ex) {}
         }
         return Enum.valueOf(enumType, __UNKNOWN_CONSTANT__);
     }

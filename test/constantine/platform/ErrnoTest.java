@@ -6,8 +6,8 @@
 package constantine.platform;
 
 import com.kenai.constantine.platform.Errno;
-import com.kenai.constantine.Constant;
 import com.kenai.constantine.ConstantSet;
+import java.util.EnumSet;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -47,25 +47,36 @@ public class ErrnoTest {
     // @Test
     // public void hello() {}
     @Test public void intValue() {
-        for (Errno errno : Errno.values()) {
+        for (Errno errno : EnumSet.allOf(Errno.class)) {
             if (errno == Errno.__UNKNOWN_CONSTANT__) {
                 continue;
             }
             int val = constants.getValue(errno.name());
-            assertEquals("Incorrect integer value for " + errno.name(), val, errno.value());
+            assertEquals("Incorrect integer value for " + errno.name() + ",", val, errno.value());
         }
     }
     @Test public void valueOf() {
-        for (Errno errno : Errno.values()) {
+        for (Errno errno : EnumSet.allOf(Errno.class)) {
             if (errno == Errno.__UNKNOWN_CONSTANT__) {
                 continue;
             }
             Errno e = Errno.valueOf(errno.value());
-            assertEquals("Incorrect integer value for " + errno.name(), errno.value(), e.value());
+            assertEquals("Incorrect integer value for " + errno.name() + ",", errno.value(), e.value());
         }
     }
     @Test public void unknownConstant() {
         Errno none = Errno.valueOf(~0);
         assertEquals("Incorrect errno for unknown value", Errno.__UNKNOWN_CONSTANT__, none);
+    }
+    @Test public void reverseLookupCache() {
+        for (Errno errno : EnumSet.allOf(Errno.class)) {
+            if (errno == Errno.__UNKNOWN_CONSTANT__) {
+                continue;
+            }
+            Errno e1 = Errno.valueOf(errno.value());
+            Errno e2 = Errno.valueOf(errno.value());
+
+            assertEquals("Cached Enum values differ for " + errno.name() + ",", e1, e2);
+        }
     }
 }
