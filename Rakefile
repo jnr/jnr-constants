@@ -10,35 +10,7 @@ PLATFORM_DIR = "src/com/kenai/constantine/platform"
 OS = FFI::Platform::OS
 ARCH = FFI::Platform::ARCH
 IS_WINDOWS = OS =~ /^win/
-OS_CONSTANTS = Dir["gen/const/*.rb"].map {|c| File.basename(c, ".rb") }
-
-arches = [ ]
-arch_options = {}
-
-if OS =~ /darwin/
-  osx_arches = [ "ppc", "i386" ]
-  osx_arches << "x86_64" if `arch` == "x86_64"
-  osx_arches.each do |arch|
-    arches << arch
-    platform_dir = File.join("#{PLATFORM_DIR}/darwin", "#{arch}")
-    platform_pkg = "#{PLATFORM_PREFIX}.darwin.#{arch}"
-    arch_options[arch] = {
-        :platform_osdir => File.join(PLATFORM_DIR, OS),
-        :platform_dir => platform_dir,
-        :platform_pkg => platform_pkg,
-        :cppflags => "-arch #{arch}"
-    }
-  end
-
-else
-  arches = [ ARCH ]
-  arch_options[ARCH] = {
-    :platform_osdir => File.join(PLATFORM_DIR, OS),
-    :platform_dir => File.join(PLATFORM_DIR, OS, ARCH),
-    :platform_pkg => "#{PLATFORM_PREFIX}.#{OS}.#{ARCH}",
-    :cppflags => ""
-    }
-end
+CONSTANTS = Dir["gen/const/*.rb"].map {|c| File.basename(c, ".rb") }
 
 def gen_platform_constants(name, pkg, file_name, options = {})
   meth = "gen_#{name.downcase}_java".to_sym
@@ -147,7 +119,7 @@ end
 xplatform_files = []
 platform_files = []
 fake_files = []
-OS_CONSTANTS.each do |name|
+CONSTANTS.each do |name|
   load File.join(File.dirname(__FILE__), "gen", "const", "#{name}.rb")
   platform_files << File.join(PLATFORM_DIR, OS, "#{name}.java")
   file File.join(PLATFORM_DIR, OS, "#{name}.java") do |t|
