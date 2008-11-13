@@ -26,7 +26,7 @@ module Constantine
       @constants = {}
       @names = []
       @prefix = prefix
-      @unknown_range = { :first => 10000, :last => 19999 }
+      @unknown_range = { :first => 20000, :last => 29999 }
       @required = options[:required]
       @options = options
 
