@@ -2,7 +2,7 @@ require 'gen/ConstGenerator'
 def gen_addressfamily_java(options)
   ConstGenerator.new 'platform.address_family', options do |cg|
     cg.include "sys/socket.h"
-    cg.const %w[
+    %w[
       AF_UNSPEC
       AF_LOCAL
       AF_UNIX
@@ -45,6 +45,6 @@ def gen_addressfamily_java(options)
       AF_NETGRAPH
       AF_AX25
       AF_MAX
-    ]
+    ].each {|c| cg.const c }
   end
 end

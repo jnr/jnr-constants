@@ -3,7 +3,7 @@ def gen_inaddr_java(options)
   ConstGenerator.new 'platform.inaddr', options do |cg|
     cg.include "sys/types.h"
     cg.include "netinet/in.h"
-    cg.const %w[
+    %w[
       INADDR_ANY
       INADDR_BROADCAST
       INADDR_NONE
@@ -12,6 +12,6 @@ def gen_inaddr_java(options)
       INADDR_ALLHOSTS_GROUP
       INADDR_ALLRTRS_GROUP
       INADDR_MAX_LOCAL_GROUP
-    ]
+    ].each {|c| cg.const c, "%#x", "(unsigned int)" }
   end
 end
