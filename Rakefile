@@ -144,14 +144,15 @@ def gen_xplatform_constants(name, pkg, dir, options = {})
     f.puts "}"
   end
 end
-const_tasks = []
+xplatform_files = []
+platform_files = []
+fake_files = []
 OS_CONSTANTS.each do |name|
-  load File.join(File.dirname(__FILE__), "const", "#{name}.rb")
+  load File.join(File.dirname(__FILE__), "gen", "const", "#{name}.rb")
   pkg = "#{PLATFORM_PREFIX}.#{JRuby::FFI::Platform::OS}"
   dir = "#{PLATFORM_DIR}/#{JRuby::FFI::Platform::OS}"
   file "#{dir}/#{name}.java" do
     gen_platform_constants(name, pkg, dir)
-    
   end
   file "#{PLATFORM_DIR}/#{name}.java" do
     gen_xplatform_constants(name, PLATFORM_PREFIX, PLATFORM_DIR)
@@ -159,21 +160,33 @@ OS_CONSTANTS.each do |name|
   file File.join(PLATFORM_DIR, "fake", "#{name}.java") do
     gen_fake_constants(name, "#{PLATFORM_PREFIX}.fake", File.join(PLATFORM_DIR, "fake"))
   end
-  const_tasks << "#{dir}/#{name}.java"
-  const_tasks << "#{PLATFORM_DIR}/#{name}.java"
-  const_tasks << "#{PLATFORM_DIR}/fake/#{name}.java"
+  platform_files << "#{dir}/#{name}.java"
+  fake_files << "#{PLATFORM_DIR}/fake/#{name}.java"
+  xplatform_files << "#{PLATFORM_DIR}/#{name}.java"
 end unless JRuby::FFI::Platform::IS_WINDOWS
 
-
 task :default => :generate
-task :generate => const_tasks
+task :generate => platform_files + xplatform_files + fake_files
 task :regen => [ :clean, :generate ]
-task :clean do
-  OS_CONSTANTS.each do |name|
-    [ File.join(PLATFORM_DIR, JRuby::FFI::Platform::OS, "#{name}.java"),
-      File.join(PLATFORM_DIR, "fake", "#{name}.java"),
-      File.join(PLATFORM_DIR, "#{name}.java") ].each do |file|
-      FileUtils.rm_f(file)
-    end
+task :clean => [ "clean:platform", "clean:xplatform", "clean:fake" ]
+namespace :clean do
+  task :platform do
+    platform_files.each { |f| FileUtils.rm_f(f) }
   end
+  task :xplatform do
+    xplatform_files.each { |f| FileUtils.rm_f(f) }
+  end
+  task :fake do
+    fake_files.each { |f| FileUtils.rm_f(f) }
+  end
+end
+namespace :generate do
+  task :platform => platform_files
+  task :xplatform => xplatform_files
+  task :fake => fake_files
+end
+namespace :regen do
+  task :platform => [ "clean:platform" ] + platform_files
+  task :xplatform => [ "clean:xplatform" ] + xplatform_files
+  task :fake => [ "clean:fake" ] + fake_files
 end
