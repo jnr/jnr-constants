@@ -56,7 +56,9 @@ def gen_platform_constants(name, pkg, file_name, options = {})
       f.puts "  public static final java.util.Map<#{name}, String> generateTable() {"
       f.puts "    java.util.Map<#{name}, String> map = new java.util.EnumMap<#{name}, String>(#{name}.class);"
       constants.values.each do |c|
-        f.puts "  map.put(#{c.name}, \"#{c.description.nil? ? c.name : c.description}\");"
+        if !c.value.nil?
+          f.puts "  map.put(#{c.name}, \"#{c.description.nil? ? c.name : c.description}\");"
+        end
       end
       f.puts "    return map;"
       f.puts "  }"
