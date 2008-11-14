@@ -26,7 +26,7 @@ def gen_platform_constants(name, pkg, file_name, options = {})
     comments = []
     sorted = constants.values.reject { |c| c.value.nil? }.sort
     min_value, max_value = sorted.first.value, sorted.last.value
-    sorted.each_with_index do |c, i|
+    constants.values.each_with_index do |c, i|
       if c.value.nil?
         comments << "// #{c.name} not defined"
       else
@@ -49,12 +49,12 @@ def gen_platform_constants(name, pkg, file_name, options = {})
     f.puts "public static final long MAX_VALUE = #{max_value};"
     f.puts ""
     # Generate the string description table
-    unless sorted.reject {|c| c.description.nil? }.empty?
+    unless constants.values.reject {|c| c.description.nil? }.empty?
       f.puts "static final class StringTable {"
       f.puts "  public static final java.util.Map<#{name}, String> descriptions = generateTable();"
       f.puts "  public static final java.util.Map<#{name}, String> generateTable() {"
       f.puts "    java.util.Map<#{name}, String> map = new java.util.EnumMap<#{name}, String>(#{name}.class);"
-      sorted.each do |c|
+      constants.values.each do |c|
         f.puts "  map.put(#{c.name}, \"#{c.description.nil? ? c.name : c.description}\");"
       end
       f.puts "    return map;"
