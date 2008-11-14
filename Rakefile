@@ -83,6 +83,8 @@ def gen_fake_constants(name, pkg, file_name, options = {})
 
     f.puts "private final int value;"
     f.puts "private #{name}(int value) { this.value = value; }"
+    f.puts "public static final long MIN_VALUE = 1;"
+    f.puts "public static final long MAX_VALUE = #{names.length};"
     f.puts "public final int value() { return value; }"
     f.puts "}"
   end
