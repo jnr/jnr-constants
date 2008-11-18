@@ -1,6 +1,7 @@
 $VERBOSE = true
 $verbose = Rake.application.options.trace
 
+require 'rubygems'
 require 'ffi'
 require 'fileutils'
 
