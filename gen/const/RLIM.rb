@@ -1,7 +1,9 @@
 require 'gen/ConstGenerator'
 def gen_rlim_java(options)
   ConstGenerator.new 'platform.rlimit', options do |cg|
+    cg.include "stdint.h"
     cg.include "sys/resource.h"
+    cg.include "sys/types.h"
     %w[
       RLIM_NLIMITS
       RLIM_INFINITY
