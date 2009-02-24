@@ -4,7 +4,7 @@
   <groupId>org.jruby.extras</groupId>
   <artifactId>constantine</artifactId>
   <packaging>jar</packaging>
-  <version>0.4</version>
+  <version>0.5</version>
   <name>constantine</name>
   <description>A set of platform constants (e.g. errno values)</description>
   <url>http://constantine.kenai.com</url>
