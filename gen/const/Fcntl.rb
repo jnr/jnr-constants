@@ -5,13 +5,6 @@ def gen_fcntl_java(options)
     cg.include "string.h"
     cg.unknown_range=[20000, 20999]
     consts = %w[
-      FREAD
-      FWRITE
-      FAPPEND
-      FASYNC
-      FFSYNC
-      FNONBLOCK
-      FNDELAY
       F_DUPFD
       F_GETFD
       F_SETFD
