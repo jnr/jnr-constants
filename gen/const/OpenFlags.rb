@@ -24,6 +24,8 @@ def gen_openflags_java(options)
       O_EVTONLY
       O_DIRECTORY
       O_SYMLINK
+      O_BINARY
+      O_NOCTTY
     ]
     consts.each { |c| cg.const c }
   end
