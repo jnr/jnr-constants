@@ -110,11 +110,13 @@ def gen_xplatform_constants(name, pkg, file_name, options = {})
     names.each { |n| f.puts "#{n}," }
     f.puts "__UNKNOWN_CONSTANT__;"
     unknown_range = cg.unknown_range
-    unless unknown_range.empty?
-      f.puts "private static final ConstantResolver<#{name}> resolver "
-      f.puts "= ConstantResolver.getResolver(#{name}.class, #{unknown_range[:first]}, #{unknown_range[:last]});"
+    f.puts "private static final ConstantResolver<#{name}> resolver = "
+    if cg.type == :bitmask
+      f.puts "ConstantResolver.getBitmaskResolver(#{name}.class);"
+    elsif !unknown_range.empty?
+      f.puts "ConstantResolver.getResolver(#{name}.class, #{unknown_range[:first]}, #{unknown_range[:last]});"
     else
-      f.puts "private static final ConstantResolver<#{name}> resolver = ConstantResolver.getResolver(#{name}.class);"
+      f.puts "ConstantResolver.getResolver(#{name}.class);"
     end
     f.puts "public final int value() { return resolver.intValue(this); }"
     f.puts "public final String description() { return resolver.description(this); }"
