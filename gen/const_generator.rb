@@ -10,6 +10,7 @@ module Constantine
     @options = {}
     attr_reader :constants
     attr_reader :names
+    attr_reader :type
 
     ##
     # Creates a new constant generator that uses +prefix+ as a name, and an
@@ -77,6 +78,15 @@ module Constantine
     def unknown_range
       @unknown_range
     end
+
+    def type=(t)
+      if t == :bitmask 
+        @type = t
+      else
+        raise "Invalid constant type #{t}"
+      end
+    end
+
     def calculate(options = {})
       binary = File.join Dir.tmpdir, "rb_const_gen_bin_#{Process.pid}"
 
