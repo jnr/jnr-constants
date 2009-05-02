@@ -38,6 +38,7 @@ class ConstantResolver<E extends Enum<E>> {
     private final Map<Integer, E> reverseLookupMap = new ConcurrentHashMap<Integer, E>();
     private final AtomicInteger nextUnknown;;
     private final int lastUnknown;
+    private final boolean bitmask;
 
     private Constant[] cache = null;
     private volatile E[] valueCache = null;
@@ -45,19 +46,27 @@ class ConstantResolver<E extends Enum<E>> {
     private volatile ConstantSet constants;
 
     private ConstantResolver(Class<E> enumType) {
-        this(enumType, Integer.MIN_VALUE, Integer.MIN_VALUE + 1000);
+        this(enumType, Integer.MIN_VALUE, Integer.MIN_VALUE + 1000, false);
     }
-    private ConstantResolver(Class<E> enumType, int firstUnknown, int lastUnknown) {
+
+    private ConstantResolver(Class<E> enumType, int firstUnknown, int lastUnknown, boolean bitmask) {
         this.enumType = enumType;
         this.nextUnknown = new AtomicInteger(firstUnknown);
         this.lastUnknown = lastUnknown;
+        this.bitmask = bitmask;
     }
+    
     static final <T extends Enum<T>> ConstantResolver<T> getResolver(Class<T> enumType) {
         return new ConstantResolver<T>(enumType);
     }
     static final <T extends Enum<T>> ConstantResolver<T> getResolver(Class<T> enumType, int first, int last) {
-        return new ConstantResolver<T>(enumType, first, last);
+        return new ConstantResolver<T>(enumType, first, last, false);
     }
+
+    static final <T extends Enum<T>> ConstantResolver<T> getBitmaskResolver(Class<T> enumType) {
+        return new ConstantResolver<T>(enumType, 0, 0x80000000, true);
+    }
+
     private static final class UnknownConstant implements Constant {
         private final int value;
         private final String name;
@@ -85,19 +94,54 @@ class ConstantResolver<E extends Enum<E>> {
         }
         // fallthru to slow lookup+add
         synchronized (modLock) {
+            // Recheck, in case another thread loaded the table
+            if (cacheGuard != 0 && (c = cache[e.ordinal()]) != null) {
+                return c;
+            }
+            EnumSet<E> enums = EnumSet.allOf(enumType);
+            ConstantSet cset = getConstants();
             if (cache == null) {
-                cache = new Constant[EnumSet.allOf(enumType).size()];
+                cache = new Constant[enums.size()];
             }
-            c = getConstants().getConstant(e.name());
-            if (c == null) {
-                c = new UnknownConstant(nextUnknown.getAndAdd(1), e.name());
-                reverseLookupMap.put(c.value(), e);
+            long known = 0, unknown = 0;
+            for (Enum v : enums) {
+                c = cset.getConstant(v.name());
+                if (c == null) {
+                    if (bitmask) {
+                        // Flag the value as unknown - real values will be
+                        // inserted once all values are resolved, so there are
+                        // no collisions
+                        unknown |= (1L << v.ordinal());
+                        c = new UnknownConstant(0, v.name());
+                    } else {
+                        c = new UnknownConstant(nextUnknown.getAndAdd(1), v.name());
+                    }
+                } else if (bitmask) {
+                    known |= c.value();
+                }
+                cache[v.ordinal()] = c;
             }
-            cache[e.ordinal()] = c;
-            cacheGuard = cacheGuard + 1; // write volatile guard
+            //
+            // For bitmask constant sets, we generate bitmask values for missing
+            // constants by utilising unused bits
+            //
+            if (bitmask) {
+                long mask = 0;
+                while ((mask = Long.lowestOneBit(unknown)) != 0) {
+                    int index = Long.numberOfTrailingZeros(mask);
+                    int sparebit = Long.numberOfTrailingZeros(Long.lowestOneBit(~known));
+                    int value = 1 << sparebit;
+                    cache[index] = new UnknownConstant(value, cache[index].name());
+                    known |= value;
+                    unknown &= ~(1L << index);
+                }
+            }
+            cacheGuard = 1; // write volatile guard
         }
-        return c;
+
+        return cache[e.ordinal()];
     }
+
     final int intValue(E e) {
         return getConstant(e).value();
     }
