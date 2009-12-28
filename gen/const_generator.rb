@@ -100,13 +100,28 @@ module Constantine
         f.puts "#include <stddef.h>\n\n"
         f.puts "int main(int argc, char **argv)\n{"
 
+        process_lastError = options.has_key?(:LastError)
+        if (process_lastError)
+          f.puts "char buffer[1001];\n"
+        end
+
         @constants.each_value do |const|
           str = options.has_key?(:to_str) ? "#{options[:to_str]}(#{const.name})" : "\"\""
-          f.puts <<-EOF
+          if (process_lastError)
+            f.puts <<-EOF
+  #ifdef #{const.name}
+    memset(buffer, 0, sizeof buffer);
+    FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, #{const.name}, 0, buffer, 1000, NULL);
+    printf("#{const.name} #{const.format} %s\\n", #{const.cast}#{const.name}, buffer);
+  #endif
+            EOF
+          else
+            f.puts <<-EOF
   #ifdef #{const.name}
   printf("#{const.name} #{const.format} %s\\n", #{const.cast}#{const.name}, #{str});
   #endif
-          EOF
+            EOF
+          end
         end
 
         f.puts "\n\treturn 0;\n}"
@@ -123,7 +138,9 @@ module Constantine
       output = `#{binary}`
       File.unlink(binary + (FFI::Platform.windows? ? ".exe" : ""))
       output.each_line do |line|
-        line =~ /^(\S+)\s(\S+)\s(.*)$/
+        line.strip!
+        next if line.empty?
+        line =~ /^(\S+)\s(\S+)\s?(.*?)\.?$/
         const = @constants[$1]
         const.value = $2
         const.description = $3 unless $3.strip.empty?

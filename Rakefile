@@ -11,7 +11,13 @@ PLATFORM_DIR = "src/com/kenai/constantine/platform"
 OS = FFI::Platform::OS
 ARCH = FFI::Platform::ARCH
 IS_WINDOWS = OS =~ /^win/
-CONSTANTS = Dir["gen/const/*.rb"].map {|c| File.basename(c, ".rb") }
+
+if (IS_WINDOWS)
+  CONSTANTS = ['LastError', 'Errno', 'OpenFlags', 'Signal']
+else
+  CONSTANTS = Dir["gen/const/*.rb"].map {|c| File.basename(c, ".rb") }
+  CONSTANTS.delete('LastError') # this is Windows-specific
+end
 
 def gen_platform_constants(name, pkg, file_name, options = {})
   meth = "gen_#{name.downcase}_java".to_sym
@@ -144,7 +150,7 @@ CONSTANTS.each do |name|
   file File.join(PLATFORM_DIR, "fake", "#{name}.java") do |t|
     gen_fake_constants(name, "#{PLATFORM_PREFIX}.fake", t.name)
   end
-end unless IS_WINDOWS
+end
 
 task :default => :generate
 task :generate => platform_files + xplatform_files + fake_files
