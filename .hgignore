@@ -1,9 +1,0 @@
-\.orig$
-\.orig\..*$
-\.chg\..*$
-\.rej$
-\.conflict\~$
-^build/.*$
-^target/.*$
-^nbproject/private/.*$
-^dist/.*$
