@@ -5,9 +5,9 @@ require 'rubygems'
 require 'ffi'
 require 'fileutils'
 
-ICONSTANT = "com.kenai.constantine.Constant"
-PLATFORM_PREFIX = "com.kenai.constantine.platform"
-PLATFORM_DIR = "src/com/kenai/constantine/platform"
+ICONSTANT = "jnr.constants.Constant"
+PLATFORM_PREFIX = "jnr.constants.platform"
+PLATFORM_DIR = "src/jnr/constants/platform"
 OS = FFI::Platform::OS
 ARCH = FFI::Platform::ARCH
 IS_WINDOWS = OS =~ /^win/
@@ -45,16 +45,16 @@ def gen_platform_constants(name, pkg, file_name, options = {})
         else
           sep = ","
         end
-        f.print "#{c.name}(#{c.value})"
+        f.print "#{c.name}(#{c.value}L)"
       end
     end
     f.puts ";"
 
     comments.each {|comm| f.puts "#{comm}" }
-    f.puts "private final int value;"
-    f.puts "private #{name}(int value) { this.value = value; }"
-    f.puts "public static final long MIN_VALUE = #{min_value};"
-    f.puts "public static final long MAX_VALUE = #{max_value};"
+    f.puts "private final long value;"
+    f.puts "private #{name}(long value) { this.value = value; }"
+    f.puts "public static final long MIN_VALUE = #{min_value}L;"
+    f.puts "public static final long MAX_VALUE = #{max_value}L;"
     f.puts ""
     # Generate the string description table
     unless constants.values.reject {|c| c.description.nil? }.empty?
@@ -72,7 +72,8 @@ def gen_platform_constants(name, pkg, file_name, options = {})
       f.puts "}"
       f.puts "public final String toString() { return StringTable.descriptions.get(this); }"
     end
-    f.puts "public final int value() { return value; }"
+    f.puts "public final int intValue() { return (int) value; }"
+    f.puts "public final long longValue() { return value; }"
     f.puts "}"
   end
 end
@@ -94,11 +95,12 @@ def gen_fake_constants(name, pkg, file_name, options = {})
       f.puts "#{c}(#{max_value})#{i < (names.length - 1) ? ',' : ';'}"
     end
 
-    f.puts "private final int value;"
-    f.puts "private #{name}(int value) { this.value = value; }"
-    f.puts "public static final long MIN_VALUE = 1;"
-    f.puts "public static final long MAX_VALUE = #{max_value};"
-    f.puts "public final int value() { return value; }"
+    f.puts "private final long value;"
+    f.puts "private #{name}(long value) { this.value = value; }"
+    f.puts "public static final long MIN_VALUE = 1L;"
+    f.puts "public static final long MAX_VALUE = #{max_value}L;"
+    f.puts "public final int intValue() { return (int) value; }"
+    f.puts "public final long longValue() { return value; }"
     f.puts "}"
   end
 end
@@ -124,10 +126,11 @@ def gen_xplatform_constants(name, pkg, file_name, options = {})
     else
       f.puts "ConstantResolver.getResolver(#{name}.class);"
     end
-    f.puts "public final int value() { return resolver.intValue(this); }"
+    f.puts "public final int intValue() { return (int) resolver.longValue(this); }"
+    f.puts "public final long longValue() { return resolver.longValue(this); }"
     f.puts "public final String description() { return resolver.description(this); }"
     f.puts "public final String toString() { return description(); }"
-    f.puts "public final static #{name} valueOf(int value) { "
+    f.puts "public static #{name} valueOf(long value) { "
     f.puts "    return resolver.valueOf(value);"
     f.puts "}"
     f.puts "}"
