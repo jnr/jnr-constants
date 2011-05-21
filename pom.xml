@@ -2,12 +2,12 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.jruby.extras</groupId>
-  <artifactId>constantine</artifactId>
+  <artifactId>jnr-constants</artifactId>
   <packaging>jar</packaging>
   <version>0.7</version>
-  <name>constantine</name>
+  <name>jnr-constants</name>
   <description>A set of platform constants (e.g. errno values)</description>
-  <url>http://constantine.kenai.com</url>
+  <url>http://github.com/jnr/jnr-constants</url>
   <licenses>
     <license>
       <name>The MIT License</name>
@@ -16,8 +16,8 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:hg:https://kenai.com/hg/constantine~mercurial</connection>
-    <url>https://kenai.com/hg/constantine~mercurial</url>
+    <connection>scm:git:https://github.com/jnr/jnr-constants.git</connection>
+    <url>https://github.com/jnr/jnr-constants</url>
   </scm>
   <distributionManagement>
      <repository>
