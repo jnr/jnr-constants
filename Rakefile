@@ -7,7 +7,7 @@ require 'fileutils'
 
 ICONSTANT = "jnr.constants.Constant"
 PLATFORM_PREFIX = "jnr.constants.platform"
-PLATFORM_DIR = "src/jnr/constants/platform"
+PLATFORM_DIR = "src/main/java/jnr/constants/platform"
 OS = FFI::Platform::OS
 ARCH = FFI::Platform::ARCH
 IS_WINDOWS = OS =~ /^win/
