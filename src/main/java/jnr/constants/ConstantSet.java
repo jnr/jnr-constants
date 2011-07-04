@@ -230,17 +230,4 @@ public class ConstantSet extends AbstractSet<Constant> {
     public boolean contains(Object o) {
         return o != null && o.getClass().equals(enumClass);
     }
-
-    public static void main(String[] args) {
-        ConstantSet errnos = ConstantSet.getConstantSet("Errno");
-        for (Constant c : errnos) {
-            System.out.println(c.name() + "=" + c.longValue());
-        }
-        com.kenai.constantine.platform.Errno errno = com.kenai.constantine.platform.Errno.valueOf(22);
-        System.out.println("errno for 22=" + errno);
-        System.out.println("errno for 101=" + com.kenai.constantine.platform.Errno.valueOf(101));
-        System.out.println("errno for 22=" + com.kenai.constantine.platform.Errno.valueOf(22));
-        System.out.println("EINVAL.value() = " + com.kenai.constantine.platform.Errno.EINVAL.value());
-        System.out.println("E2BIG.value() = " + com.kenai.constantine.platform.Errno.E2BIG.value());
-    }
 }
