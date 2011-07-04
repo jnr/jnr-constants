@@ -4,7 +4,7 @@
   <groupId>org.jruby.extras</groupId>
   <artifactId>jnr-constants</artifactId>
   <packaging>jar</packaging>
-  <version>0.8</version>
+  <version>0.8.1</version>
   <name>jnr-constants</name>
   <description>A set of platform constants (e.g. errno values)</description>
   <url>http://github.com/jnr/jnr-constants</url>
