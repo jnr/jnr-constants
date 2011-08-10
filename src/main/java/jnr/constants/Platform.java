@@ -29,24 +29,42 @@ import java.util.Map;
  */
 public class Platform {
     private static final Platform INSTANCE = new Platform();
+
+    private final String packageName;
+
     public static Platform getPlatform() {
         return INSTANCE;
     }
+
     protected Platform() {
-    }
-
-    static String getConstantsPackageName() {
         Package pkg = Platform.class.getPackage();
-        return pkg != null
-                ? pkg.getName()
-                : Platform.class.getName().substring(0, Platform.class.getName().lastIndexOf('.'));
+        this.packageName = pkg != null
+            ? pkg.getName()
+            : Platform.class.getName().substring(0, Platform.class.getName().lastIndexOf('.'));
     }
 
-    public String getPackageName() {
+    String getConstantsPackageName() {
+        return packageName;
+    }
+
+    public String[] getPackagePrefixes() {
+        return new String[] {
+            getArchPackageName(),
+            getOSPackageName(),
+            getFakePackageName(),
+        };
+    }
+
+    public String getArchPackageName() {
         return String.format("%s.platform.%s.%s", getConstantsPackageName(), OS, ARCH);
     }
+
     public String getOSPackageName() {
         return String.format("%s.platform.%s", getConstantsPackageName(), OS);
+    }
+
+    public String getFakePackageName() {
+        return String.format("%s.platform.fake", getConstantsPackageName());
     }
 
     public static final Map<String, String> OS_NAMES = new HashMap<String, String>() {{

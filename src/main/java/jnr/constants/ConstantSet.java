@@ -28,8 +28,6 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Provides forward and reverse lookup for platform constants
@@ -81,11 +79,8 @@ public class ConstantSet extends AbstractSet<Constant> {
      */
     @SuppressWarnings("unchecked")
     private static final Class<Enum> getEnumClass(String name) {
-        String[] prefixes = {
-            Platform.getPlatform().getPackageName(),
-            Platform.getPlatform().getOSPackageName(),
-            Platform.getConstantsPackageName() + ".platform.fake",
-        };
+        String[] prefixes = Platform.getPlatform().getPackagePrefixes();
+
         for (String prefix : prefixes) {
             try {
                 return (Class<Enum>) Class.forName(prefix + "." + name).asSubclass(Enum.class);
