@@ -84,7 +84,7 @@ public class ConstantSet extends AbstractSet<Constant> {
         String[] prefixes = {
             Platform.getPlatform().getPackageName(),
             Platform.getPlatform().getOSPackageName(),
-            Platform.class.getPackage().getName() + ".platform.fake",
+            Platform.getConstantsPackageName() + ".platform.fake",
         };
         for (String prefix : prefixes) {
             try {
@@ -130,7 +130,7 @@ public class ConstantSet extends AbstractSet<Constant> {
     /**
      * Gets the constant for a name.
      *
-     * @param name The name of the system constant (e.g. "EINVAL").
+     * @param value A system constant value.
      * @return A {@link Constant} instance.
      */
     @SuppressWarnings("unchecked")
