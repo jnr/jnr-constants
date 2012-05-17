@@ -9,7 +9,7 @@
   <groupId>com.github.jnr</groupId>
   <artifactId>jnr-constants</artifactId>
   <packaging>jar</packaging>
-  <version>0.8.3-SNAPSHOT</version>
+  <version>0.8.3</version>
   <name>jnr-constants</name>
   <description>A set of platform constants (e.g. errno values)</description>
   <url>http://github.com/jnr/jnr-constants</url>
