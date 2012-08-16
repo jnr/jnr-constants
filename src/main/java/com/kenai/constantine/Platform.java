@@ -36,10 +36,9 @@ public class Platform {
     }
 
     static String getConstantsPackageName() {
-        Package pkg = Platform.class.getPackage();
-        return pkg != null
-                ? pkg.getName()
-                : Platform.class.getName().substring(0, Platform.class.getName().lastIndexOf('.'));
+        // Determining this dynamically fails if jarjar is used, so hardcode instead
+        // Update this if you change the package name or refactor this class
+        return "com.kenai.constantine";
     }
 
     public String getPackageName() {
