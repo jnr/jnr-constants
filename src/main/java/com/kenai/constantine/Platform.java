@@ -32,14 +32,25 @@ public class Platform {
     public static Platform getPlatform() {
         return INSTANCE;
     }
-    protected Platform() {
+
+    private static final class PackageNameResolver {
+        public static final String PACKAGE_NAME = new PackageNameResolver().inferPackageName();
+
+        private String inferPackageName() {
+            try {
+                Class cls = getClass();
+                Package pkg = cls.getPackage();
+                return pkg != null ? pkg.getName(): cls.getName().substring(0, cls.getName().lastIndexOf('.'));
+            } catch (NullPointerException npe) {
+                return "com.kenai.constantine";
+            }
+        }
     }
 
+    private Platform() { }
+
     static String getConstantsPackageName() {
-        Package pkg = Platform.class.getPackage();
-        return pkg != null
-                ? pkg.getName()
-                : Platform.class.getName().substring(0, Platform.class.getName().lastIndexOf('.'));
+        return PackageNameResolver.PACKAGE_NAME;
     }
 
     public String getPackageName() {

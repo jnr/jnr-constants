@@ -27,24 +27,31 @@ import java.util.Map;
 /**
  * Platform specific constants.
  */
-public class Platform {
+public final class Platform {
     private static final Platform INSTANCE = new Platform();
-
-    private final String packageName;
 
     public static Platform getPlatform() {
         return INSTANCE;
     }
 
-    protected Platform() {
-        Package pkg = Platform.class.getPackage();
-        this.packageName = pkg != null
-            ? pkg.getName()
-            : Platform.class.getName().substring(0, Platform.class.getName().lastIndexOf('.'));
+    private static final class PackageNameResolver {
+        public static final String PACKAGE_NAME = new PackageNameResolver().inferPackageName();
+
+        private String inferPackageName() {
+            try {
+                Class cls = getClass();
+                Package pkg = cls.getPackage();
+                return pkg != null ? pkg.getName(): cls.getName().substring(0, cls.getName().lastIndexOf('.'));
+            } catch (NullPointerException npe) {
+                return "jnr.constants";
+            }
+        }
     }
 
-    String getConstantsPackageName() {
-        return packageName;
+    private Platform() { }
+
+    private static String getConstantsPackageName() {
+        return PackageNameResolver.PACKAGE_NAME;
     }
 
     public String[] getPackagePrefixes() {
@@ -72,12 +79,14 @@ public class Platform {
         }
         public static final long serialVersionUID = 1L;
     };
+
     public static final Map<String, String> ARCH_NAMES = new HashMap<String, String>() {{
             put("x86", "i386");
         }
         public static final long serialVersionUID = 1L;
     };
-    private static final String initOperatingSystem() {
+
+    private static String initOperatingSystem() {
         String osname = getProperty("os.name", "unknown").toLowerCase();
         for (String s : OS_NAMES.keySet()) {
             if (s.equalsIgnoreCase(osname)) {
@@ -89,6 +98,7 @@ public class Platform {
         }
         return osname;
     }
+
     private static final String initArchitecture() {
         String arch = getProperty("os.arch", "unknown").toLowerCase();
         for (String s : ARCH_NAMES.keySet()) {
