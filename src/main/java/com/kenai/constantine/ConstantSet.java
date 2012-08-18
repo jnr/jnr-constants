@@ -37,13 +37,9 @@ import java.util.logging.Logger;
 public class ConstantSet extends AbstractSet<Constant> {
     private final ConcurrentMap<String, Constant> nameToConstant;
     private final ConcurrentMap<Integer, Constant> valueToConstant;
-    private final Set<Constant> constants;
-    private final Class<Enum> enumClass;
-    private volatile Long minValue;
-    private volatile Long maxValue;
-    
-    private static final ConcurrentMap<String, ConstantSet> constantSets
-            = new ConcurrentHashMap<String, ConstantSet>();
+    private final jnr.constants.ConstantSet constants;
+
+    private static final ConcurrentMap<String, ConstantSet> constantSets = new ConcurrentHashMap<String, ConstantSet>();
     private static final Object lock = new Object();
 
     /**
@@ -57,15 +53,7 @@ public class ConstantSet extends AbstractSet<Constant> {
         if (constants == null) {
             synchronized (lock) {
                 if (!constantSets.containsKey(name)) {
-                    Class<Enum> enumClass = getEnumClass(name);
-                    if (enumClass == null) {
-                        return null;
-                    }
-                    if (!Constant.class.isAssignableFrom(enumClass)) {
-                        throw new ClassCastException("class for " + name
-                                + " does not implement Constant interface");
-                    }
-                    constants = new ConstantSet(enumClass);
+                    constants = new ConstantSet(jnr.constants.ConstantSet.getConstantSet(name));
                     constantSets.put(name, constants);
                 }
             }
@@ -73,39 +61,17 @@ public class ConstantSet extends AbstractSet<Constant> {
         return constants;
     }
 
-    /**
-     * Gets the {@link Enum} class for the constant name space.
-     *
-     * @param name The name of the constants to locate.
-     * @return A Class.
-     */
-    @SuppressWarnings("unchecked")
-    private static final Class<Enum> getEnumClass(String name) {
-        String[] prefixes = {
-            Platform.getPlatform().getPackageName(),
-            Platform.getPlatform().getOSPackageName(),
-            Platform.getConstantsPackageName() + ".platform.fake",
-        };
-        for (String prefix : prefixes) {
-            try {
-                return (Class<Enum>) Class.forName(prefix + "." + name).asSubclass(Enum.class);
-            } catch (ClassNotFoundException ex) {
-            }
-        }
-        return null;
-    }
 
     /**
      * Creates a new instance of <tt>ConstantSet</tt>
      *
-     * @param enumClass The Enum subclass to load constants from.
+     * @param constants The JNR constants to lookup real values in
      */
     @SuppressWarnings("unchecked")
-    private ConstantSet(Class<Enum> enumClass) {
-        this.enumClass = enumClass;
+    private ConstantSet(jnr.constants.ConstantSet constants) {
         nameToConstant = new ConcurrentHashMap<String, Constant>();
         valueToConstant = new ConcurrentHashMap<Integer, Constant>();
-        constants = (Set<Constant>) EnumSet.allOf(enumClass);
+        this.constants = constants;
     }
 
     /**
@@ -118,10 +84,14 @@ public class ConstantSet extends AbstractSet<Constant> {
     public Constant getConstant(String name) {
         Constant c = nameToConstant.get(name);
         if (c == null) {
-            try {
-                nameToConstant.put(name, c = Constant.class.cast(Enum.valueOf(enumClass, name)));
-            } catch (IllegalArgumentException ex) {
-                return null;
+            synchronized (lock) {
+                if (!nameToConstant.containsKey(name)) {
+                    jnr.constants.Constant jnrConstant = constants.getConstant(name);
+                    if (jnrConstant != null) {
+                        nameToConstant.put(name, c = new ConstantImpl(jnrConstant));
+                        valueToConstant.put(jnrConstant.intValue(), c);
+                    }
+                }
             }
         }
         return c;
@@ -130,26 +100,13 @@ public class ConstantSet extends AbstractSet<Constant> {
     /**
      * Gets the constant for a name.
      *
-     * @param name The name of the system constant (e.g. "EINVAL").
+     * @param value The name of the system constant (e.g. "EINVAL").
      * @return A {@link Constant} instance.
      */
     @SuppressWarnings("unchecked")
     public Constant getConstant(int value) {
         Constant c = valueToConstant.get(value);
-        if (c == null) {
-            if (c == null) {
-                for (Constant c2 : constants) {
-                    if (c2.value() == value) {
-                        c = c2;
-                        break;
-                    }
-                }
-                if (c != null) {
-                    valueToConstant.put(value, c);
-                }
-            }
-        }
-        return c;
+        return c != null ? c : getConstant(constants.getConstant(value).name());
     }
 
     /**
@@ -159,8 +116,7 @@ public class ConstantSet extends AbstractSet<Constant> {
      * @return The integer value of the constant.
      */
     public int getValue(String name) {
-        Constant c = getConstant(name);
-        return c != null ? c.value() : 0;
+        return (int) constants.getValue(name);
     }
 
     /**
@@ -170,39 +126,60 @@ public class ConstantSet extends AbstractSet<Constant> {
      * @return The name of the constant.
      */
     public String getName(int value) {
-        Constant c = getConstant(value);
-        return c != null ? c.name() : "unknown";
+        return constants.getName(value);
     }
-    private Long getLongField(String name, long defaultValue) {
-        try {
-            Field f = enumClass.getField("MIN_VALUE");
-            return (Long) f.get(enumClass);
-        } catch (NoSuchFieldException ex) {
-            return defaultValue;
-        } catch (RuntimeException ex) {
-            throw ex;
-        } catch (Exception ex) {
-            throw new RuntimeException(ex);
-        }
-    }
+
     public long minValue() {
-        if (minValue == null) {
-            minValue = getLongField("MIN_VALUE", Integer.MIN_VALUE);
-        }
-        return minValue.intValue();
+        return constants.minValue();
     }
+
     public long maxValue() {
-        if (maxValue == null) {
-            maxValue = getLongField("MAX_VALUE", Integer.MAX_VALUE);
-        }
-        return maxValue.intValue();
+        return constants.maxValue();
     }
+
+    private final class ConstantImpl implements Constant {
+        private final jnr.constants.Constant constant;
+
+        ConstantImpl(jnr.constants.Constant constant) {
+            this.constant = constant;
+        }
+
+        public int value() {
+            return constant.intValue();
+        }
+
+        public int intValue() {
+            return constant.intValue();
+        }
+
+        public long longValue() {
+            return constant.longValue();
+        }
+
+        public String name() {
+            return constant.name();
+        }
+
+        public int hashCode() {
+            return constant.hashCode();
+        }
+
+        public boolean equals(Object other) {
+            return other instanceof ConstantImpl && ((ConstantImpl) other).constant.equals(constant);
+        }
+
+        public final String toString() {
+            return constant.toString();
+        }
+    }
+
     private final class ConstantIterator implements Iterator<Constant> {
-        private final Iterator<Constant> it;
+        private final Iterator<jnr.constants.Constant> it;
         
-        ConstantIterator(Collection<Constant> constants) {
+        ConstantIterator() {
             this.it = constants.iterator();
         }
+
         public boolean hasNext() {
             return it.hasNext();
         }
@@ -212,13 +189,13 @@ public class ConstantSet extends AbstractSet<Constant> {
         }
 
         public Constant next() {
-            return it.next();
+            return getConstant(it.next().name());
         }
         
     }
     @Override
     public Iterator<Constant> iterator() {
-        return new ConstantIterator(constants);
+        return new ConstantIterator();
     }
 
     @Override
@@ -228,7 +205,7 @@ public class ConstantSet extends AbstractSet<Constant> {
 
     @Override
     public boolean contains(Object o) {
-        return o != null && o.getClass().equals(enumClass);
+        return o != null && o.getClass().equals(ConstantImpl.class) && nameToConstant.values().contains(o);
     }
 
     public static void main(String[] args) {

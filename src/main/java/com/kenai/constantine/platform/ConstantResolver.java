@@ -79,6 +79,14 @@ class ConstantResolver<E extends Enum<E>> {
             return value;
         }
 
+        public int intValue() {
+            return value;
+        }
+
+        public long longValue() {
+            return value;
+        }
+
         public String name() {
             return name;
         }
@@ -93,7 +101,12 @@ class ConstantResolver<E extends Enum<E>> {
             return c;
         }
         // fallthru to slow lookup+add
+        return lookupAndCacheConstant(e);
+    }
+
+    private Constant lookupAndCacheConstant(E e) {
         synchronized (modLock) {
+            Constant c;
             // Recheck, in case another thread loaded the table
             if (cacheGuard != 0 && (c = cache[e.ordinal()]) != null) {
                 return c;
@@ -137,14 +150,18 @@ class ConstantResolver<E extends Enum<E>> {
                 }
             }
             cacheGuard = 1; // write volatile guard
+            return cache[e.ordinal()];
         }
-
-        return cache[e.ordinal()];
     }
 
     final int intValue(E e) {
         return getConstant(e).value();
     }
+
+    final long longValue(E e) {
+        return getConstant(e).longValue();
+    }
+
     final String description(E e) {
          return getConstant(e).toString();
     }
@@ -174,8 +191,10 @@ class ConstantResolver<E extends Enum<E>> {
                 return e;
             } catch (IllegalArgumentException ex) {}
         }
+        System.out.println("failed to reverse lookup value " + value);
         return Enum.valueOf(enumType, __UNKNOWN_CONSTANT__);
     }
+
     private final ConstantSet getConstants() {
         if (constants == null) {
             constants = ConstantSet.getConstantSet(enumType.getSimpleName());

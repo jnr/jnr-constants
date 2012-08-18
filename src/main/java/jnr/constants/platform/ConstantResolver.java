@@ -104,7 +104,13 @@ class ConstantResolver<E extends Enum<E>> {
             return c;
         }
         // fallthru to slow lookup+add
+        return lookupAndCacheConstant(e);
+    }
+
+    private Constant lookupAndCacheConstant(E e) {
         synchronized (modLock) {
+            Constant c;
+
             // Recheck, in case another thread loaded the table
             if (cacheGuard != 0 && (c = cache[e.ordinal()]) != null) {
                 return c;
@@ -150,9 +156,9 @@ class ConstantResolver<E extends Enum<E>> {
                 }
             }
             cacheGuard = 1; // write volatile guard
+            return cache[e.ordinal()];
         }
 
-        return cache[e.ordinal()];
     }
 
     final int intValue(E e) {

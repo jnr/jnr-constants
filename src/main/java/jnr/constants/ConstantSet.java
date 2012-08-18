@@ -35,7 +35,7 @@ import java.util.concurrent.ConcurrentMap;
 public class ConstantSet extends AbstractSet<Constant> {
     private final ConcurrentMap<String, Constant> nameToConstant;
     private final ConcurrentMap<Long, Constant> valueToConstant;
-    private final Set<Constant> constants;
+    private final Set<Enum> constants;
     private final Class<Enum> enumClass;
     private volatile Long minValue;
     private volatile Long maxValue;
@@ -100,7 +100,7 @@ public class ConstantSet extends AbstractSet<Constant> {
         this.enumClass = enumClass;
         nameToConstant = new ConcurrentHashMap<String, Constant>();
         valueToConstant = new ConcurrentHashMap<Long, Constant>();
-        constants = (Set<Constant>) EnumSet.allOf(enumClass);
+        constants = EnumSet.allOf(enumClass);
     }
 
     /**
@@ -132,16 +132,14 @@ public class ConstantSet extends AbstractSet<Constant> {
     public Constant getConstant(long value) {
         Constant c = valueToConstant.get(value);
         if (c == null) {
-            if (c == null) {
-                for (Constant c2 : constants) {
-                    if (c2.longValue() == value) {
-                        c = c2;
-                        break;
-                    }
+            for (Enum e : constants) {
+                if (e instanceof Constant && ((Constant) e).longValue() == value) {
+                    c = (Constant) e;
+                    break;
                 }
-                if (c != null) {
-                    valueToConstant.put(value, c);
-                }
+            }
+            if (c != null) {
+                valueToConstant.put(value, c);
             }
         }
         return c;
@@ -192,14 +190,18 @@ public class ConstantSet extends AbstractSet<Constant> {
         }
         return maxValue.intValue();
     }
+
     private final class ConstantIterator implements Iterator<Constant> {
-        private final Iterator<Constant> it;
+        private final Iterator<Enum> it;
+        private Constant next = null;
         
-        ConstantIterator(Collection<Constant> constants) {
+        ConstantIterator(Collection<Enum> constants) {
             this.it = constants.iterator();
+            next = it.hasNext() ? (Constant) it.next() : null;
         }
+
         public boolean hasNext() {
-            return it.hasNext();
+            return next != null && !next.name().equals("__UNKNOWN_CONSTANT__");
         }
 
         public void remove() {
@@ -207,7 +209,9 @@ public class ConstantSet extends AbstractSet<Constant> {
         }
 
         public Constant next() {
-            return it.next();
+            Constant prev = next;
+            next = it.hasNext() ? (Constant) it.next() : null;
+            return prev;
         }
         
     }
