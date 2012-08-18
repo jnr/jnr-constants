@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Provides forward and reverse lookup utilities to cross-platform enums
  */
+@Deprecated
 class ConstantResolver<E extends Enum<E>> {
     public static final String __UNKNOWN_CONSTANT__ = "__UNKNOWN_CONSTANT__";
     private final Object modLock = new Object();

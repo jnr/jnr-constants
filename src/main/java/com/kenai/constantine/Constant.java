@@ -23,6 +23,7 @@ package com.kenai.constantine;
 /**
  * A class that represents a native platform constant
  */
+@Deprecated
 public interface Constant extends jnr.constants.Constant {
     int value();
 }

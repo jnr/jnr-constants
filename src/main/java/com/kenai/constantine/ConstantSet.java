@@ -34,6 +34,7 @@ import java.util.logging.Logger;
 /**
  * Provides forward and reverse lookup for platform constants
  */
+@Deprecated
 public class ConstantSet extends AbstractSet<Constant> {
     private final ConcurrentMap<String, Constant> nameToConstant;
     private final ConcurrentMap<Integer, Constant> valueToConstant;
