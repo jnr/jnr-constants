@@ -1,7 +1,9 @@
 require 'gen/ConstGenerator'
+require 'rbconfig'
 def gen_signal_java(options)
   ConstGenerator.new 'platform.signal', options do |cg|
     cg.include "signal.h"
+    cg.include "win32.h" if RbConfig::CONFIG['host_os'] == 'mswin32'
     %w[
 SIGHUP
 SIGINT

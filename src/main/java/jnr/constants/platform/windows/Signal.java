@@ -25,7 +25,7 @@ SIGILL(4),
 NSIG(23),
 // SIGURG not defined
 // SIGPWR not defined
-// SIGKILL not defined
+SIGKILL(9),
 // SIGBUS not defined
 // SIGUNUSED not defined
 // SIGPOLL not defined
