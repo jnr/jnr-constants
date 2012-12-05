@@ -54,7 +54,8 @@ public class ConstantSet extends AbstractSet<Constant> {
         ConstantSet constants = constantSets.get(name);
         if (constants == null) {
             synchronized (lock) {
-                if (!constantSets.containsKey(name)) {
+                constants = constantSets.get(name);
+                if (constants == null) {
                     Class<Enum> enumClass = getEnumClass(name);
                     if (enumClass == null) {
                         return null;
