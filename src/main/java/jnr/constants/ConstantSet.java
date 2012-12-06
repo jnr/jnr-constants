@@ -52,24 +52,27 @@ public class ConstantSet extends AbstractSet<Constant> {
      */
     public static ConstantSet getConstantSet(String name) {
         ConstantSet constants = constantSets.get(name);
-        if (constants == null) {
-            synchronized (lock) {
-                constants = constantSets.get(name);
-                if (constants == null) {
-                    Class<Enum> enumClass = getEnumClass(name);
-                    if (enumClass == null) {
-                        return null;
-                    }
-                    if (!Constant.class.isAssignableFrom(enumClass)) {
-                        throw new ClassCastException("class for " + name
-                                + " does not implement Constant interface");
-                    }
-                    constants = new ConstantSet(enumClass);
-                    constantSets.put(name, constants);
+        return constants != null ? constants : loadConstantSet(name);
+    }
+
+    private static ConstantSet loadConstantSet(String name) {
+        synchronized (lock) {
+            ConstantSet constants = constantSets.get(name);
+            if (constants == null) {
+                Class<Enum> enumClass = getEnumClass(name);
+                if (enumClass == null) {
+                    return null;
                 }
+                if (!Constant.class.isAssignableFrom(enumClass)) {
+                    throw new ClassCastException("class for " + name
+                            + " does not implement Constant interface");
+                }
+
+                constantSets.put(name, constants = new ConstantSet(enumClass));
             }
+
+            return constants;
         }
-        return constants;
     }
 
     /**
