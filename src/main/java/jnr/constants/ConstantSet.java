@@ -21,11 +21,7 @@
 package jnr.constants;
 
 import java.lang.reflect.Field;
-import java.util.AbstractSet;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -33,8 +29,8 @@ import java.util.concurrent.ConcurrentMap;
  * Provides forward and reverse lookup for platform constants
  */
 public class ConstantSet extends AbstractSet<Constant> {
-    private final ConcurrentMap<String, Constant> nameToConstant;
-    private final ConcurrentMap<Long, Constant> valueToConstant;
+    private final Map<String, Constant> nameToConstant;
+    private final Map<Long, Constant> valueToConstant;
     private final Set<Enum> constants;
     private final Class<Enum> enumClass;
     private volatile Long minValue;
@@ -102,9 +98,20 @@ public class ConstantSet extends AbstractSet<Constant> {
     @SuppressWarnings("unchecked")
     private ConstantSet(Class<Enum> enumClass) {
         this.enumClass = enumClass;
-        nameToConstant = new ConcurrentHashMap<String, Constant>();
-        valueToConstant = new ConcurrentHashMap<Long, Constant>();
-        constants = EnumSet.allOf(enumClass);
+        this.constants = EnumSet.allOf(enumClass);
+
+        Map<String, Constant> names = new HashMap<String, Constant>();
+        Map<Long, Constant> values = new HashMap<Long, Constant>();
+        for (Enum e : constants) {
+            if (e instanceof Constant) {
+                Constant c = (Constant) e;
+                names.put(e.name(), c);
+                values.put(c.longValue(), c);
+            }
+        }
+
+        nameToConstant = Collections.unmodifiableMap(names);
+        valueToConstant = Collections.unmodifiableMap(values);
     }
 
     /**
@@ -113,40 +120,18 @@ public class ConstantSet extends AbstractSet<Constant> {
      * @param name The name of the system constant (e.g. "EINVAL").
      * @return A {@link Constant} instance.
      */
-    @SuppressWarnings("unchecked")
-    public Constant getConstant(String name) {
-        Constant c = nameToConstant.get(name);
-        if (c == null) {
-            try {
-                nameToConstant.put(name, c = Constant.class.cast(Enum.valueOf(enumClass, name)));
-            } catch (IllegalArgumentException ex) {
-                return null;
-            }
-        }
-        return c;
+    public final Constant getConstant(String name) {
+        return nameToConstant.get(name);
     }
 
     /**
-     * Gets the constant for a name.
+     * Gets the constant for a value.
      *
      * @param value A system constant value.
      * @return A {@link Constant} instance.
      */
-    @SuppressWarnings("unchecked")
     public Constant getConstant(long value) {
-        Constant c = valueToConstant.get(value);
-        if (c == null) {
-            for (Enum e : constants) {
-                if (e instanceof Constant && ((Constant) e).longValue() == value) {
-                    c = (Constant) e;
-                    break;
-                }
-            }
-            if (c != null) {
-                valueToConstant.put(value, c);
-            }
-        }
-        return c;
+        return valueToConstant.get(value);
     }
 
     /**
