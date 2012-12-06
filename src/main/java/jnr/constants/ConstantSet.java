@@ -170,9 +170,10 @@ public class ConstantSet extends AbstractSet<Constant> {
         Constant c = getConstant(value);
         return c != null ? c.name() : "unknown";
     }
+
     private Long getLongField(String name, long defaultValue) {
         try {
-            Field f = enumClass.getField("MIN_VALUE");
+            Field f = enumClass.getField(name);
             return (Long) f.get(enumClass);
         } catch (NoSuchFieldException ex) {
             return defaultValue;
@@ -182,12 +183,22 @@ public class ConstantSet extends AbstractSet<Constant> {
             throw new RuntimeException(ex);
         }
     }
+
+    /**
+     * Returns the minimum value in this ConstantSet
+     * @return a long value
+     */
     public long minValue() {
         if (minValue == null) {
             minValue = getLongField("MIN_VALUE", Integer.MIN_VALUE);
         }
         return minValue.intValue();
     }
+
+    /**
+     * Returns the maximum value in this ConstantSet
+     * @return a long value
+     */
     public long maxValue() {
         if (maxValue == null) {
             maxValue = getLongField("MAX_VALUE", Integer.MAX_VALUE);
