@@ -14,4 +14,5 @@ public static final long MAX_VALUE = 20L;
 
 public final int intValue() { return (int) value; }
 public final long longValue() { return value; }
+public final boolean defined() { return true; }
 }

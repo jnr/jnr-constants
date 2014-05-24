@@ -40,6 +40,7 @@ ConstantResolver.getResolver(Fcntl.class, 20000, 20999);
 public final int intValue() { return (int) resolver.longValue(this); }
 public final long longValue() { return resolver.longValue(this); }
 public final String description() { return resolver.description(this); }
+public final boolean defined() { return resolver.defined(this); }
 public final String toString() { return description(); }
 public static Fcntl valueOf(long value) { 
     return resolver.valueOf(value);

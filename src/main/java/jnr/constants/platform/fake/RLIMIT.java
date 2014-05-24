@@ -26,4 +26,5 @@ public static final long MIN_VALUE = 1L;
 public static final long MAX_VALUE = 18L;
 public final int intValue() { return (int) value; }
 public final long longValue() { return value; }
+public final boolean defined() { return true; }
 }

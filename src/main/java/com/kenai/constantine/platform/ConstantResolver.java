@@ -91,6 +91,11 @@ class ConstantResolver<E extends Enum<E>> {
         public String name() {
             return name;
         }
+
+        public boolean defined() {
+            return false;
+        }
+
         @Override
         public String toString() {
             return name;

@@ -74,6 +74,7 @@ def gen_platform_constants(name, pkg, file_name, options = {})
     end
     f.puts "public final int intValue() { return (int) value; }"
     f.puts "public final long longValue() { return value; }"
+    f.puts "public final boolean defined() { return true; }"
     f.puts "}"
   end
 end
@@ -101,6 +102,7 @@ def gen_fake_constants(name, pkg, file_name, options = {})
     f.puts "public static final long MAX_VALUE = #{max_value}L;"
     f.puts "public final int intValue() { return (int) value; }"
     f.puts "public final long longValue() { return value; }"
+    f.puts "public final boolean defined() { return true; }"
     f.puts "}"
   end
 end
@@ -129,6 +131,7 @@ def gen_xplatform_constants(name, pkg, file_name, options = {})
     f.puts "public final int intValue() { return (int) resolver.longValue(this); }"
     f.puts "public final long longValue() { return resolver.longValue(this); }"
     f.puts "public final String description() { return resolver.description(this); }"
+    f.puts "public final boolean defined() { return resolver.defined(this); }"
     f.puts "public final String toString() { return description(); }"
     f.puts "public static #{name} valueOf(long value) { "
     f.puts "    return resolver.valueOf(value);"

@@ -137,4 +137,5 @@ public static final long MAX_VALUE = 131L;
 
 public final int intValue() { return (int) value; }
 public final long longValue() { return value; }
+public final boolean defined() { return true; }
 }

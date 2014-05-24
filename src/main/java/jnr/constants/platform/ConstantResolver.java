@@ -91,6 +91,10 @@ class ConstantResolver<E extends Enum<E>> {
             return name;
         }
 
+        public final boolean defined() {
+            return false;
+        }
+
         @Override
         public final String toString() {
             return name;
@@ -173,6 +177,11 @@ class ConstantResolver<E extends Enum<E>> {
 
     final String description(E e) {
          return getConstant(e).toString();
+    }
+
+
+    final boolean defined(E e) {
+        return getConstant(e).defined();
     }
 
 

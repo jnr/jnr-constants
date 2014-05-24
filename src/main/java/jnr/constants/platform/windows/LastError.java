@@ -307,4 +307,5 @@ public final String toString() { return StringTable.descriptions.get(this); }
 public final int value() { return value; }
 public final int intValue() { return value; }
 public final long longValue() { return value; }
+public final boolean defined() { return true; }
 }

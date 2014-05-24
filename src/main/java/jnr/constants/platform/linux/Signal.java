@@ -48,4 +48,5 @@ public static final long MAX_VALUE = 65;
 public final int value() { return value; }
 public final int intValue() { return value; }
 public final long longValue() { return value; }
+public final boolean defined() { return true; }
 }

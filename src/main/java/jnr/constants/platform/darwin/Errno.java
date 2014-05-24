@@ -187,4 +187,5 @@ static final class StringTable {
 public final String toString() { return StringTable.descriptions.get(this); }
 public final int intValue() { return (int) value; }
 public final long longValue() { return value; }
+public final boolean defined() { return true; }
 }

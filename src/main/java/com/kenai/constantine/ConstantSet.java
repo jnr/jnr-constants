@@ -161,6 +161,10 @@ public class ConstantSet extends AbstractSet<Constant> {
             return constant.name();
         }
 
+        public boolean defined() {
+            return true;
+        }
+
         public int hashCode() {
             return constant.hashCode();
         }
