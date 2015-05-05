@@ -1,2 +1,2 @@
-require 'gen/const_generator'
+require_relative 'const_generator'
 ConstGenerator = Constantine::ConstGenerator

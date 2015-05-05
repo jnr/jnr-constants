@@ -1,4 +1,4 @@
-require 'gen/ConstGenerator'
+require_relative '../../gen/ConstGenerator'
 def gen_prio_java(options)
   ConstGenerator.new 'platform.prio', options do |cg|
     cg.include "sys/resource.h"

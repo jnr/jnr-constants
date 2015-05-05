@@ -1,4 +1,4 @@
-require 'gen/ConstGenerator'
+require_relative '../../gen/ConstGenerator'
 def gen_socketoption_java(options)
   ConstGenerator.new 'platform.socket_option', options do |cg|
     cg.include "sys/socket.h"

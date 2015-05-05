@@ -1,4 +1,4 @@
-require 'gen/ConstGenerator'
+require_relative '../../gen/ConstGenerator'
 def gen_nameinfo_java(options)
   ConstGenerator.new 'platform.nameinfo', options do |cg|
     cg.include "sys/socket.h"

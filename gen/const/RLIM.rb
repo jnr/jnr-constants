@@ -1,4 +1,4 @@
-require 'gen/ConstGenerator'
+require_relative '../../gen/ConstGenerator'
 def gen_rlim_java(options)
   ConstGenerator.new 'platform.rlimit', options do |cg|
     cg.include "stdint.h"

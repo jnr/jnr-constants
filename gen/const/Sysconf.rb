@@ -1,4 +1,4 @@
-require 'gen/ConstGenerator'
+require_relative '../../gen/ConstGenerator'
 def gen_sysconf_java(options)
   ConstGenerator.new 'platform.sysconf', options do |cg|
     cg.include "sys/types.h"

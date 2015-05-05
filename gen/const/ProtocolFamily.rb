@@ -1,4 +1,4 @@
-require 'gen/ConstGenerator'
+require_relative '../../gen/ConstGenerator'
 def gen_protocolfamily_java(options)
   ConstGenerator.new 'platform.protocol_family', options do |cg|
     cg.include "sys/socket.h"

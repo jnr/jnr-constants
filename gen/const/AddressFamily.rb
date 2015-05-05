@@ -1,4 +1,4 @@
-require 'gen/ConstGenerator'
+require_relative '../../gen/ConstGenerator'
 def gen_addressfamily_java(options)
   ConstGenerator.new 'platform.address_family', options do |cg|
     cg.include "sys/socket.h"

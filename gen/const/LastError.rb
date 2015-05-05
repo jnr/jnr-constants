@@ -1,4 +1,4 @@
-require 'gen/ConstGenerator'
+require_relative '../../gen/ConstGenerator'
 def gen_lasterror_java(options)
   options[:LastError] = true
   ConstGenerator.new 'platform.lasterror', options do |cg|

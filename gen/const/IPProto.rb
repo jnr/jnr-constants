@@ -1,4 +1,4 @@
-require 'gen/ConstGenerator'
+require_relative '../../gen/ConstGenerator'
 def gen_ipproto_java(options)
   ConstGenerator.new 'platform.ipproto', options do |cg|
     cg.include "netinet/in.h"

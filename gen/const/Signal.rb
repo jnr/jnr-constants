@@ -1,4 +1,4 @@
-require 'gen/ConstGenerator'
+require_relative '../../gen/ConstGenerator'
 require 'rbconfig'
 def gen_signal_java(options)
   ConstGenerator.new 'platform.signal', options do |cg|
