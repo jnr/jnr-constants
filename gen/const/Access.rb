@@ -3,6 +3,7 @@ def gen_access_java(options)
   ConstGenerator.new 'platform.access', options do |cg|
     cg.include "unistd.h"
     cg.type = :bitmask
+    cg.min_value = 0
     %w[
       F_OK
       X_OK
