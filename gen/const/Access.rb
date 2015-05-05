@@ -5,9 +5,9 @@ def gen_access_java(options)
     cg.type = :bitmask
     %w[
       F_OK
-      R_OK
-      W_OK
       X_OK
+      W_OK
+      R_OK
     ].each { |c| cg.const c }
   end
 end
