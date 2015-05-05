@@ -1,5 +1,9 @@
+Java Native Runtime Constants
+=============================================
+[![Build Status](https://travis-ci.org/jnr/jnr-constants.svg?branch=master)](https://travis-ci.org/jnr/jnr-constants)
+
 Overview
-========
+--------
 
 This project contains Java enums for common POSIX constants.  It is predominately used to make calls into jnr-posix
 far simpler.
