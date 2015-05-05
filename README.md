@@ -20,9 +20,17 @@ generating the Java source.
 To run the code generator, you must have Rake installed in Ruby 1.9+.  There are three tasks you must run in order to
 generate all the necessary files:
 
-    $ rake generate:platform
     $ rake generate:xplatform
+    $ rake generate:platform
     $ rake generate:fake
+
+The _generate:xplatform_ variant generates the top-level enum file.  While this contains the necessary fields, it does
+not contain the integer values for those fields.  The values lookup is delegated to either an OS-specific (and possibly
+architecture-specific) implementation or a so-called "fake" implementation.
+
+To generate the OS-specific file, you use the _generate:platform_ task.  This must be run on each platform you'd like
+to generate the files for.  As that can be cumbersome and you might not have access to a machine running each OS, you
+should also generate the "fake" implementation as a fail-safe.  The _generate:fake_ task is responsible for that.
 
 The generated files are version-controlled.  Please remember to commit them in addition to the Ruby templates for the
 generator.
