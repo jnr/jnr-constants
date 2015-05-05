@@ -90,15 +90,25 @@ def gen_fake_constants(name, pkg, file_name, options = {})
     f.puts "package #{pkg};"
     f.puts "public enum #{name} implements #{ICONSTANT} {";
 
+    min_value = cg.min_value
     max_value = 0
     names.each_with_index do |c, i|
-      max_value = cg.type ==:bitmask ? "0x#{(1 << i).to_s(16)}" : i + 1
+      max_value = if min_value == 0
+          if i == 0
+            cg.type ==:bitmask ? "0x0" : i + min_value
+          else
+            cg.type ==:bitmask ? "0x#{(1 << (i - 1)).to_s(16)}" : i + min_value
+          end
+        else
+          cg.type ==:bitmask ? "0x#{(1 << i).to_s(16)}" : i + min_value
+        end
+
       f.puts "#{c}(#{max_value})#{i < (names.length - 1) ? ',' : ';'}"
     end
 
     f.puts "private final long value;"
     f.puts "private #{name}(long value) { this.value = value; }"
-    f.puts "public static final long MIN_VALUE = 1L;"
+    f.puts "public static final long MIN_VALUE = #{min_value}L;"
     f.puts "public static final long MAX_VALUE = #{max_value}L;"
     f.puts "public final int intValue() { return (int) value; }"
     f.puts "public final long longValue() { return value; }"

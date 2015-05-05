@@ -11,6 +11,7 @@ module Constantine
     attr_reader :constants
     attr_reader :names
     attr_reader :type
+    attr_accessor :min_value
 
     ##
     # Creates a new constant generator that uses +prefix+ as a name, and an
@@ -28,6 +29,7 @@ module Constantine
       @names = []
       @prefix = prefix
       @unknown_range = { :first => 20000, :last => 29999 }
+      @min_value = 1
       @required = options[:required]
       @options = options
 
