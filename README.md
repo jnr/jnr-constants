@@ -1,3 +1,7 @@
+jnr-constants
+========
+[![Build Status](https://travis-ci.org/jnr/jnr-constants.svg?branch=master)](https://travis-ci.org/jnr/jnr-constants)
+
 Overview
 ========
 
