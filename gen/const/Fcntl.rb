@@ -3,6 +3,7 @@ def gen_fcntl_java(options)
   ConstGenerator.new 'platform.fcntl', options do |cg|
     cg.include "fcntl.h"
     cg.include "string.h"
+    cg.min_value = 0
     cg.unknown_range=[20000, 20999]
     consts = %w[
       F_DUPFD
