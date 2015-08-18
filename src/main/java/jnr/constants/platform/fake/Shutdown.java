@@ -2,9 +2,9 @@
 // Generated 2010-07-31 18:57:15 +1000
 package jnr.constants.platform.fake;
 public enum Shutdown implements jnr.constants.Constant {
-SHUT_RD(0x1),
-SHUT_WR(0x2),
-SHUT_RDWR(0x4);
+SHUT_RD(0x0),
+SHUT_WR(0x1),
+SHUT_RDWR(0x2);
 private final long value;
 private Shutdown(long value) { this.value = value; }
 public static final long MIN_VALUE = 1L;
