@@ -21,7 +21,9 @@ O_EVTONLY(0x8000),
 O_DIRECTORY(0x10000),
 O_SYMLINK(0x20000),
 O_BINARY(0x40000),
-O_NOCTTY(0x80000);
+O_NOCTTY(0x80000),
+O_TMPFILE(0x100000),
+O_CLOEXEC(0x200000);
 private final long value;
 private OpenFlags(long value) { this.value = value; }
 public static final long MIN_VALUE = 1L;

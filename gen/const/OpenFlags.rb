@@ -26,6 +26,8 @@ def gen_openflags_java(options)
       O_SYMLINK
       O_BINARY
       O_NOCTTY
+      O_TMPFILE
+      O_CLOEXEC
     ]
     consts.each { |c| cg.const c }
   end

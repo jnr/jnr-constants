@@ -16,10 +16,12 @@ O_FSYNC(4096),
 // O_NOFOLLOW not defined
 O_CREAT(64),
 O_TRUNC(512),
-O_EXCL(128);
+O_EXCL(128),
 // O_EVTONLY not defined
 // O_DIRECTORY not defined
 // O_SYMLINK not defined
+O_TMPFILE(020000000 | 00200000),
+O_CLOEXEC(0x400000);
 private final int value;
 private OpenFlags(int value) { this.value = value; }
 public static final long MIN_VALUE = 0;

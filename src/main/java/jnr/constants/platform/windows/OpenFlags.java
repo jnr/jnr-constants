@@ -22,6 +22,8 @@ O_BINARY(32768),
 // O_FSYNC not defined
 O_RDWR(2),
 O_TRUNC(512);
+// O_TMPFILE not defined
+// O_CLOEXEC not defined
 private final int value;
 private OpenFlags(int value) { this.value = value; }
 public static final long MIN_VALUE = 0;

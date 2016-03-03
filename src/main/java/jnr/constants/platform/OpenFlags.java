@@ -22,6 +22,8 @@ O_DIRECTORY,
 O_SYMLINK,
 O_BINARY,
 O_NOCTTY,
+O_TMPFILE,
+O_CLOEXEC,
 __UNKNOWN_CONSTANT__;
 private static final ConstantResolver<OpenFlags> resolver = 
 ConstantResolver.getBitmaskResolver(OpenFlags.class);
