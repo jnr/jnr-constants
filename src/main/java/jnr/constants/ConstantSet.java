@@ -15,6 +15,7 @@
 package jnr.constants;
 
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -33,6 +34,16 @@ public class ConstantSet extends AbstractSet<Constant> {
     private static final ConcurrentMap<String, ConstantSet> constantSets
             = new ConcurrentHashMap<String, ConstantSet>();
     private static final Object lock = new Object();
+    private static final ClassLoader LOADER;
+
+    static {
+        ClassLoader _loader = ConstantSet.class.getClassLoader();
+        if (_loader != null) {
+            LOADER = _loader;
+        } else {
+            LOADER = ClassLoader.getSystemClassLoader();
+        }
+    }
 
     /**
      * Gets a <tt>ConstantSet</tt>
@@ -76,9 +87,17 @@ public class ConstantSet extends AbstractSet<Constant> {
         String[] prefixes = Platform.getPlatform().getPackagePrefixes();
 
         for (String prefix : prefixes) {
-            try {
-                return (Class<Enum>) Class.forName(prefix + "." + name).asSubclass(Enum.class);
-            } catch (ClassNotFoundException ex) {
+            String fullName = prefix + "." + name;
+
+            // Reduce exceptions on boot by trying to find the class as a resource first
+            String path = fullName.replace('.', '/') + ".class";
+            URL resource = LOADER.getResource(path);
+
+            if (resource != null) {
+                try {
+                    return (Class<Enum>) Class.forName(fullName).asSubclass(Enum.class);
+                } catch (ClassNotFoundException ex) {
+                }
             }
         }
         return null;
