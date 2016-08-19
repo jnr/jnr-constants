@@ -45,7 +45,6 @@ def gen_socketoption_java(options)
       SO_SECURITY_AUTHENTICATION
       SO_SECURITY_ENCRYPTION_NETWORK
       SO_SECURITY_ENCRYPTION_TRANSPORT
-      SOMAXCONN
     ].each {|c| cg.const(c, "%#x", "(unsigned int)") { |v| v.hex} }
   end
 end
