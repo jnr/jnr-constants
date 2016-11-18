@@ -48,12 +48,21 @@ public final class Platform {
         return PackageNameResolver.PACKAGE_NAME;
     }
 
+    public static final boolean FAKE = Boolean.valueOf(System.getProperty("jnr.constants.fake", "true"));
+
     public String[] getPackagePrefixes() {
-        return new String[] {
-            getArchPackageName(),
-            getOSPackageName(),
-            getFakePackageName(),
-        };
+        if (FAKE) {
+            return new String[] {
+                    getArchPackageName(),
+                    getOSPackageName(),
+                    getFakePackageName(),
+            };
+        } else {
+            return new String[] {
+                    getArchPackageName(),
+                    getOSPackageName(),
+            };
+        }
     }
 
     public String getArchPackageName() {

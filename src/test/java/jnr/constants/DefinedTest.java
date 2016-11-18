@@ -57,4 +57,22 @@ public class DefinedTest {
             Assert.assertTrue(LangInfo.CODESET.defined());
         }
     }
+
+    @Test
+    public void testUndefinedConstant() throws Throwable {
+        if (Platform.OS.equals("linux")) {
+            Assert.assertFalse(AddressFamily.AF_CHAOS.defined());
+            if (Platform.FAKE) {
+                Assert.assertTrue(AddressFamily.AF_CHAOS.intValue() >= 20000);
+
+            } else {
+                try {
+                    AddressFamily.AF_CHAOS.intValue();
+                    Assert.fail();
+                } catch (AssertionError e) {
+                    Assert.assertTrue(true);
+                }
+            }
+        }
+    }
 }

@@ -17,6 +17,8 @@ package jnr.constants.platform;
 import jnr.constants.platform.*;
 import jnr.constants.Constant;
 import jnr.constants.ConstantSet;
+import jnr.constants.Platform;
+
 import java.lang.reflect.Array;
 import java.util.EnumSet;
 import java.util.Map;
@@ -70,14 +72,17 @@ class ConstantResolver<E extends Enum<E>> {
         }
 
         public int value() {
+            checkFake();
             return (int) value;
         }
 
         public final int intValue() {
+            checkFake();
             return (int) value;
         }
 
         public final long longValue() {
+            checkFake();
             return value;
         }
 
@@ -92,6 +97,12 @@ class ConstantResolver<E extends Enum<E>> {
         @Override
         public final String toString() {
             return name;
+        }
+
+        private void checkFake() {
+            if (!Platform.FAKE) {
+                throw new AssertionError("Constant " + name + " is not defined on " + Platform.NAME);
+            }
         }
     }
 
