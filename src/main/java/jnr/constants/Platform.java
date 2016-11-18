@@ -70,6 +70,7 @@ public final class Platform {
 
     public static final Map<String, String> OS_NAMES = new HashMap<String, String>() {{
             put("Mac OS X", "darwin");
+            put("SunOS", "solaris");
         }
         public static final long serialVersionUID = 1L;
     };
