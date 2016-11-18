@@ -50,4 +50,11 @@ public class DefinedTest {
         }
         Assert.assertFalse("no constants were undefined", allDefined);
     }
+
+    @Test
+    public void testLangInfoUnix() throws Throwable {
+        if (!Platform.OS.equals("windows")) {
+            Assert.assertTrue(LangInfo.CODESET.defined());
+        }
+    }
 }
