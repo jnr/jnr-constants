@@ -14,8 +14,13 @@
 
 package jnr.constants;
 
+import jnr.constants.platform.Errno;
+
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.URL;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -35,6 +40,8 @@ public class ConstantSet extends AbstractSet<Constant> {
             = new ConcurrentHashMap<String, ConstantSet>();
     private static final Object lock = new Object();
     private static final ClassLoader LOADER;
+    private static final boolean CAN_LOAD_RESOURCES;
+    private static volatile Throwable RESOURCE_READ_ERROR;
 
     static {
         ClassLoader _loader = ConstantSet.class.getClassLoader();
@@ -43,6 +50,38 @@ public class ConstantSet extends AbstractSet<Constant> {
         } else {
             LOADER = ClassLoader.getSystemClassLoader();
         }
+
+        boolean canLoadResources = false;
+        try {
+            URL thisClass = AccessController.doPrivileged(new PrivilegedAction<URL>() {
+                public URL run() {
+                    return LOADER.getResource("jnr/constants/ConstantSet.class");
+                }
+            });
+
+            InputStream stream = thisClass.openStream();
+
+            try {
+                stream.read();
+            } catch (Throwable t) {
+                // save for future reporting, can't read the stream for whatever reason
+                RESOURCE_READ_ERROR = t;
+            } finally {
+                try {
+                    stream.close();
+                } catch (Exception e) {
+                    // ignore
+                }
+            }
+
+            canLoadResources = true;
+        } catch (Throwable t) {
+            if (RESOURCE_READ_ERROR == null) {
+                RESOURCE_READ_ERROR = t;
+            }
+        }
+
+        CAN_LOAD_RESOURCES = canLoadResources;
     }
 
     /**
@@ -88,14 +127,20 @@ public class ConstantSet extends AbstractSet<Constant> {
 
         for (String prefix : prefixes) {
             String fullName = prefix + "." + name;
+            boolean doClass = true;
 
-            // Reduce exceptions on boot by trying to find the class as a resource first
-            String path = fullName.replace('.', '/') + ".class";
-            URL resource = LOADER.getResource(path);
+            if (CAN_LOAD_RESOURCES) {
+                // Reduce exceptions on boot by trying to find the class as a resource first
+                String path = fullName.replace('.', '/') + ".class";
+                URL resource = LOADER.getResource(path);
 
-            if (resource != null) {
+                // Able to load resources, but couldn't find this, bail out
+                if (resource == null) doClass = false;
+            }
+
+            if (doClass) {
                 try {
-                    return (Class<Enum>) Class.forName(fullName).asSubclass(Enum.class);
+                    return (Class<Enum>) Class.forName(fullName, true, LOADER).asSubclass(Enum.class);
                 } catch (ClassNotFoundException ex) {
                 }
             }
@@ -241,5 +286,9 @@ public class ConstantSet extends AbstractSet<Constant> {
     @Override
     public boolean contains(Object o) {
         return o != null && o.getClass().equals(enumClass);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(Errno.values().length);
     }
 }
