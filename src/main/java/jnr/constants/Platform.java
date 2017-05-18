@@ -66,7 +66,7 @@ public final class Platform {
     }
 
     public String getArchPackageName() {
-        return String.format("%s.platform.%s.%s", getConstantsPackageName(), OS, ARCH);
+        return String.format("%s.platform.%s.%s", getConstantsPackageName(), ARCH, OS);
     }
 
     public String getOSPackageName() {
