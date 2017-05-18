@@ -154,9 +154,9 @@ platform_files = []
 fake_files = []
 CONSTANTS.each do |name|
   load File.join(File.dirname(__FILE__), "gen", "const", "#{name}.rb")
-  platform_files << File.join(PLATFORM_DIR, OS, "#{name}.java")
-  file File.join(PLATFORM_DIR, OS, "#{name}.java") do |t|
-    gen_platform_constants(name, "#{PLATFORM_PREFIX}.#{OS}", t.name)
+  platform_files << File.join(PLATFORM_DIR, ARCH, OS, "#{name}.java")
+  file File.join(PLATFORM_DIR, ARCH, OS, "#{name}.java") do |t|
+    gen_platform_constants(name, "#{PLATFORM_PREFIX}.#{ARCH}.#{OS}", t.name)
   end
   xplatform_files << File.join(PLATFORM_DIR, "#{name}.java")
   file File.join(PLATFORM_DIR, "#{name}.java") do |t|
