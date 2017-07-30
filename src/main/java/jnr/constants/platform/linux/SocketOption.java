@@ -11,7 +11,7 @@ SO_BROADCAST(0x6),
 // SO_USELOOPBACK not defined
 SO_LINGER(0xd),
 SO_OOBINLINE(0xa),
-// SO_REUSEPORT not defined
+SO_REUSEPORT(0xf),
 SO_TIMESTAMP(0x1d),
 // SO_ACCEPTFILTER not defined
 // SO_DONTTRUNC not defined
