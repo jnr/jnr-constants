@@ -17,7 +17,7 @@ In order to do so, the code generator will compile a small program that outputs 
 in declared header files.  When the program is run, the output is parsed, and these are the values that are used when
 generating the Java source.
 
-To run the code generator, you must have Rake installed in Ruby 1.9+.  There are three tasks you must run in order to
+To run the code generator, you must have Rake and ffi (sudo gem install ffi) installed in Ruby 1.9+. There are three tasks you must run in order to
 generate all the necessary files:
 
     $ rake generate:xplatform
