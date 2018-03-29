@@ -145,6 +145,7 @@ def gen_termiosflags_java(options)
       TCSANOW
       TCSADRAIN
       TCSAFLUSH
+      PAREXT
      ].each { |c| cg.const c }
   end
 end
