@@ -13,6 +13,7 @@ def gen_termiosflags_java(options)
       VTIME
       VMIN
       VSWTC
+      VSWTCH
       VSTART
       VSTOP
       VSUSP
