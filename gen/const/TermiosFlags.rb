@@ -5,6 +5,8 @@ def gen_termiosflags_java(options)
     cg.type = :bitmask
     %w[
       NCCS
+      _HAVE_STRUCT_TERMIOS_C_ISPEED
+      _HAVE_STRUCT_TERMIOS_C_OSPEED
       VINTR
       VQUIT
       VERASE
