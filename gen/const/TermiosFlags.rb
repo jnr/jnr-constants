@@ -2,7 +2,6 @@ require_relative '../../gen/ConstGenerator'
 def gen_termiosflags_java(options)
   ConstGenerator.new 'platform.termiosflags', options do |cg|
     cg.include "termios.h"
-    cg.type = :bitmask
     %w[
       NCCS
       _HAVE_STRUCT_TERMIOS_C_ISPEED
