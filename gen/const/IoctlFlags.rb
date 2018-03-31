@@ -1,4 +1,17 @@
 require_relative '../../gen/ConstGenerator'
+# Offending defines:
+#      TCGETS2
+#      TCSETS2
+#      TCSETSW2
+#      TCSETSF2 
+#      TIOCGPTN
+#      TIOCSPTLCK
+#      TIOCGDEV
+#      TIOCSIG
+#      TIOCGPKT
+#      TIOCGPTLCK
+#      TIOCGEXCL
+
 def gen_ioctlflags_java(options)
   ConstGenerator.new 'platform.ioctlflags', options do |cg|
     cg.include "sys/ioctl.h"
@@ -44,24 +57,13 @@ def gen_ioctlflags_java(options)
       TIOCSBRK
       TIOCCBRK
       TIOCGSID
-      TCGETS2
-      TCSETS2
-      TCSETSW2
-      TCSETSF2 
       TIOCGRS485
       TIOCSRS485
-      TIOCGPTN
-      TIOCSPTLCK
-      TIOCGDEV
       TCGETX
       TCSETX
       TCSETXF
       TCSETXW
-      TIOCSIG
       TIOCVHANGUP
-      TIOCGPKT
-      TIOCGPTLCK
-      TIOCGEXCL
       TIOCGPTPEER
       FIONCLEX
       FIOCLEX
