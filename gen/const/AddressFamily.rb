@@ -1,7 +1,7 @@
 require_relative '../../gen/ConstGenerator'
 def gen_addressfamily_java(options)
   ConstGenerator.new 'platform.address_family', options do |cg|
-    cg.include "sys/socket.h"
+    cg.include IS_WINDOWS ? "Winsock2.h" : "sys/socket.h"
     %w[
       AF_UNSPEC
       AF_LOCAL
