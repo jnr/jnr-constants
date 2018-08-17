@@ -1,7 +1,7 @@
 language: java
 jdk:
-  - oraclejdk7
-  - openjdk6
+  - oraclejdk8
+  - openjdk8
 script:
   - mvn test -B
   - mvn test -B -Djnr.constants.fake=false
