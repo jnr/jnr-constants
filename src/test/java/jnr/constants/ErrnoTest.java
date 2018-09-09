@@ -51,7 +51,7 @@ public class ErrnoTest {
 
     @Test public void intValue() {
         for (Errno errno : EnumSet.allOf(Errno.class)) {
-            if (errno == Errno.__UNKNOWN_CONSTANT__) {
+            if (errno == Errno.__UNKNOWN_CONSTANT__ || !errno.defined()) {
                 continue;
             }
             long val = constants.getValue(errno.name());
@@ -60,7 +60,7 @@ public class ErrnoTest {
     }
     @Test public void valueOf() {
         for (Errno errno : EnumSet.allOf(Errno.class)) {
-            if (errno == Errno.__UNKNOWN_CONSTANT__) {
+            if (errno == Errno.__UNKNOWN_CONSTANT__ || !errno.defined()) {
                 continue;
             }
             Errno e = Errno.valueOf(errno.longValue());
@@ -69,7 +69,7 @@ public class ErrnoTest {
     }
     @Test public void description() {
         for (Errno errno : Errno.values()) {
-            if (errno == Errno.__UNKNOWN_CONSTANT__) {
+            if (errno == Errno.__UNKNOWN_CONSTANT__ || !errno.defined()) {
                 continue;
             }
             assertNotSame("Lack of description for " + errno.name(), errno.name(), errno.toString());
@@ -86,7 +86,7 @@ public class ErrnoTest {
     }
     @Test public void reverseLookupCache() {
         for (Errno errno : EnumSet.allOf(Errno.class)) {
-            if (errno == Errno.__UNKNOWN_CONSTANT__) {
+            if (errno == Errno.__UNKNOWN_CONSTANT__ || !errno.defined()) {
                 continue;
             }
             Errno e1 = Errno.valueOf(errno.longValue());
