@@ -86,7 +86,7 @@ public class ErrnoTest {
     }
     @Test public void reverseLookupCache() {
         for (Errno errno : EnumSet.allOf(Errno.class)) {
-            if (errno == Errno.__UNKNOWN_CONSTANT__) {
+            if (errno == Errno.__UNKNOWN_CONSTANT__ || !errno.defined()) {
                 continue;
             }
             Errno e1 = Errno.valueOf(errno.longValue());
