@@ -32,9 +32,10 @@ def gen_platform_constants(name, pkg, file_name, options = {})
     f.puts "public enum #{name} implements #{ICONSTANT} {";
     sep = nil
     comments = []
-    sorted = constants.values.reject { |c| c.value.nil? }.sort
-    min_value, max_value = sorted.first.value, sorted.last.value
-    constants.values.each_with_index do |c, i|
+
+    values = constants.values
+
+    values.each_with_index do |c, i|
       if c.value.nil?
         comments << "// #{c.name} not defined"
       else
@@ -50,22 +51,30 @@ def gen_platform_constants(name, pkg, file_name, options = {})
     end
     f.puts ";"
 
+    # Generate the string description table
+    filtered = values.reject {|cv| cv.value.nil? }
+    sorted = filtered.sort
+
+    if sorted.empty?
+      min_value = max_value = 0
+    else
+      min_value, max_value = sorted.first.value, sorted.last.value
+    end
+
     comments.each {|comm| f.puts "#{comm}" }
     f.puts "private final long value;"
     f.puts "private #{name}(long value) { this.value = value; }"
     f.puts "public static final long MIN_VALUE = #{min_value}L;"
     f.puts "public static final long MAX_VALUE = #{max_value}L;"
     f.puts ""
-    # Generate the string description table
-    unless constants.values.reject {|c| c.description.nil? }.empty?
+
+    unless filtered.empty?
       f.puts "static final class StringTable {"
       f.puts "  public static final java.util.Map<#{name}, String> descriptions = generateTable();"
       f.puts "  public static final java.util.Map<#{name}, String> generateTable() {"
       f.puts "    java.util.Map<#{name}, String> map = new java.util.EnumMap<#{name}, String>(#{name}.class);"
-      constants.values.each do |c|
-        if !c.value.nil?
-          f.puts "  map.put(#{c.name}, \"#{c.description.nil? ? c.name : c.description}\");"
-        end
+      filtered.each do |c|
+        f.puts "  map.put(#{c.name}, \"#{c.description.nil? ? c.name : c.description}\");"
       end
       f.puts "    return map;"
       f.puts "  }"
