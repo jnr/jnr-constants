@@ -13,6 +13,8 @@ module Constantine
     attr_reader :type
     attr_accessor :min_value
 
+    CC = ENV['CC'] || 'cc'
+
     ##
     # Creates a new constant generator that uses +prefix+ as a name, and an
     # options hash.
@@ -129,7 +131,7 @@ module Constantine
         f.puts "\n\treturn 0;\n}"
         f.flush
 
-        output = `$CC #{options[:cppflags]} $CFLAGS -D_DARWIN_USE_64_BIT_INODE -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -x c -Wall -Werror #{f.path} -o #{binary} $LDFLAGS 2>&1`
+        output = `#{CC} #{options[:cppflags]} $CFLAGS -D_DARWIN_USE_64_BIT_INODE -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -x c -Wall -Werror #{f.path} -o #{binary} $LDFLAGS 2>&1`
 
         unless $?.success? then
           output = output.split("\n").map { |l| "\t#{l}" }.join "\n"
