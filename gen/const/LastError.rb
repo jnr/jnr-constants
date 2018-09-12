@@ -8,7 +8,6 @@ def gen_lasterror_java(options)
     cg.unknown_range=[20000, 20999]
     consts = %w[
       ERROR_INVALID_FUNCTION
-      ERROR_INVALID_FUNCTION
       ERROR_FILE_NOT_FOUND
       ERROR_PATH_NOT_FOUND
       ERROR_TOO_MANY_OPEN_FILES
@@ -54,7 +53,6 @@ def gen_lasterror_java(options)
       ERROR_BROKEN_PIPE
       ERROR_DISK_FULL
       ERROR_INVALID_TARGET_HANDLE
-      ERROR_INVALID_HANDLE
       ERROR_WAIT_NO_CHILDREN
       ERROR_CHILD_NOT_COMPLETE
       ERROR_DIRECT_ACCESS_HANDLE
@@ -84,7 +82,6 @@ def gen_lasterror_java(options)
       ERROR_INFLOOP_IN_RELOC_CHAIN
       ERROR_FILENAME_EXCED_RANGE
       ERROR_NESTING_NOT_ALLOWED
-      ERROR_PIPE_LOCAL
       ERROR_PIPE_LOCAL
       ERROR_BAD_PIPE
       ERROR_PIPE_BUSY
