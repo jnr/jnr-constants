@@ -8,6 +8,7 @@ notifications:
     template:
       - "%{repository} (%{branch}:%{commit} by %{author}): %{message} (%{build_url})"
 matrix:
+  include:
   - os: os x
   - os: linux
     jdk: oraclejdk8
