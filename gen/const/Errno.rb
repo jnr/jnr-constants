@@ -16,7 +16,7 @@ def gen_errno_java(options)
       ENOEXEC
       EBADF
       ECHILD
-      EAGAIN
+      EDEADLK
       ENOMEM
       EACCES
       EFAULT
@@ -40,59 +40,10 @@ def gen_errno_java(options)
       EPIPE
       EDOM
       ERANGE
-      EDEADLK
-      ENAMETOOLONG
-      ENOLCK
-      ENOSYS
-      ENOTEMPTY
-      ELOOP
       EWOULDBLOCK
-      ENOMSG
-      EIDRM
-      ECHRNG
-      EL2NSYNC
-      EL3HLT
-      EL3RST
-      ELNRNG
-      EUNATCH
-      ENOCSI
-      EL2HLT
-      EBADE
-      EBADR
-      EXFULL
-      ENOANO
-      EBADRQC
-      EBADSLT
-      EDEADLOCK
-      EBFONT
-      ENOSTR
-      ENODATA
-      ETIME
-      ENOSR
-      ENONET
-      ENOPKG
-      EREMOTE
-      ENOLINK
-      EADV
-      ESRMNT
-      ECOMM
-      EPROTO
-      EMULTIHOP
-      EDOTDOT
-      EBADMSG
-      EOVERFLOW
-      ENOTUNIQ
-      EBADFD
-      EREMCHG
-      ELIBACC
-      ELIBBAD
-      ELIBSCN
-      ELIBMAX
-      ELIBEXEC
-      EILSEQ
-      ERESTART
-      ESTRPIPE
-      EUSERS
+      EAGAIN
+      EINPROGRESS
+      EALREADY
       ENOTSOCK
       EDESTADDRREQ
       EMSGSIZE
@@ -117,17 +68,66 @@ def gen_errno_java(options)
       ETOOMANYREFS
       ETIMEDOUT
       ECONNREFUSED
+      ELOOP
+      ENAMETOOLONG
       EHOSTDOWN
       EHOSTUNREACH
-      EALREADY
-      EINPROGRESS
+      ENOTEMPTY
+      EUSERS
+      EDQUOT
       ESTALE
+      EREMOTE
+      ENOLCK
+      ENOSYS
+      EOVERFLOW
+      EIDRM
+      ENOMSG
+      EILSEQ
+      EBADMSG
+      EMULTIHOP
+      ENODATA
+      ENOLINK
+      ENOSR
+      ENOSTR
+      EPROTO
+      ETIME
+      ECHRNG
+      EL2NSYNC
+      EL3HLT
+      EL3RST
+      ELNRNG
+      EUNATCH
+      ENOCSI
+      EL2HLT
+      EBADE
+      EBADR
+      EXFULL
+      ENOANO
+      EBADRQC
+      EBADSLT
+      EDEADLOCK
+      EBFONT
+      ENONET
+      ENOPKG
+      EADV
+      ESRMNT
+      ECOMM
+      EDOTDOT
+      ENOTUNIQ
+      EBADFD
+      EREMCHG
+      ELIBACC
+      ELIBBAD
+      ELIBSCN
+      ELIBMAX
+      ELIBEXEC
+      ERESTART
+      ESTRPIPE
       EUCLEAN
       ENOTNAM
       ENAVAIL
       EISNAM
       EREMOTEIO
-      EDQUOT
       ECANCELED
       EKEYEXPIRED
       EKEYREJECTED
@@ -158,3 +158,6 @@ def gen_errno_java(options)
     consts.each { |c| cg.const c }
   end
 end
+
+
+
