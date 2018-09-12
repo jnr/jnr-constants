@@ -1,7 +1,22 @@
 language: java
-jdk:
-  - oraclejdk8
-  - openjdk8
+notifications:
+  irc:
+    channels:
+      - "irc.freenode.org#jnr"
+    on_success: change
+    on_failure: always
+    template:
+      - "%{repository} (%{branch}:%{commit} by %{author}): %{message} (%{build_url})"
+matrix:
+  - os: os x
+  - os: linux
+    jdk: oraclejdk8
+  - os: linux
+    jdk: openjdk8
+sudo: false
+cache:
+  directories:
+  - $HOME/.m2
 script:
   - mvn test -B
   - mvn test -B -Djnr.constants.fake=false
