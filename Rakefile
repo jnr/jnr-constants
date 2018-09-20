@@ -81,6 +81,7 @@ def gen_platform_constants(name, pkg, file_name, options = {})
       f.puts "}"
       f.puts "public final String toString() { return StringTable.descriptions.get(this); }"
     end
+    f.puts "public final int value() { return (int) value; }"
     f.puts "public final int intValue() { return (int) value; }"
     f.puts "public final long longValue() { return value; }"
     f.puts "public final boolean defined() { return true; }"
@@ -119,6 +120,7 @@ def gen_fake_constants(name, pkg, file_name, options = {})
     f.puts "private #{name}(long value) { this.value = value; }"
     f.puts "public static final long MIN_VALUE = #{min_value}L;"
     f.puts "public static final long MAX_VALUE = #{max_value}L;"
+    f.puts "public final int value() { return (int) value; }"
     f.puts "public final int intValue() { return (int) value; }"
     f.puts "public final long longValue() { return value; }"
     f.puts "public final boolean defined() { return true; }"
@@ -147,6 +149,7 @@ def gen_xplatform_constants(name, pkg, file_name, options = {})
     else
       f.puts "ConstantResolver.getResolver(#{name}.class);"
     end
+    f.puts "public final int value() { return (int) resolver.longValue(this); }"
     f.puts "public final int intValue() { return (int) resolver.longValue(this); }"
     f.puts "public final long longValue() { return resolver.longValue(this); }"
     f.puts "public final String description() { return resolver.description(this); }"
