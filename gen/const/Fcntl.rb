@@ -6,6 +6,13 @@ def gen_fcntl_java(options)
     cg.min_value = 0
     cg.unknown_range=[20000, 20999]
     consts = %w[
+      FAPPEND
+      FREAD
+      FWRITE
+      FASYNC
+      FFSYNC
+      FNONBLOCK
+      FNDELAY
       F_DUPFD
       F_GETFD
       F_SETFD
