@@ -3,6 +3,7 @@ def gen_openflags_java(options)
   ConstGenerator.new 'platform.openflags', options do |cg|
     cg.include "fcntl.h"
     cg.include "string.h"
+    cg.define _GNU_SOURCE: 1
     cg.type = :bitmask
     cg.unknown_range=[20000, 20999]
     consts = %w[

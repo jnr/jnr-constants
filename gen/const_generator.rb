@@ -29,6 +29,7 @@ module Constantine
 
     def initialize(prefix = nil, options = {})
       @includes = []
+      @defines = {}
       @constants = {}
       @names = []
       @prefix = prefix
@@ -97,6 +98,12 @@ module Constantine
       binary = File.join Dir.tmpdir, "rb_const_gen_bin_#{Process.pid}"
 
       Tempfile.open("#{@prefix}.const_generator") do |f|
+
+        # defines affect the includes below and what they will define, so we do them first
+        @defines.each do |key, value|
+          f.puts "#define #{key} #{value}"
+        end
+
         f.puts "#include <stdio.h>"
 
         @includes.each do |inc|
@@ -184,6 +191,10 @@ module Constantine
 
     def include(i)
       @includes << i
+    end
+
+    def define(**defs)
+      @defines.merge! defs
     end
 
   end
