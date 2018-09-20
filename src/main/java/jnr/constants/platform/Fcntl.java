@@ -44,6 +44,7 @@ F_ALLOCATEALL,
 __UNKNOWN_CONSTANT__;
 private static final ConstantResolver<Fcntl> resolver = 
 ConstantResolver.getResolver(Fcntl.class, 20000, 20999);
+public final int value() { return (int) resolver.longValue(this); }
 public final int intValue() { return (int) resolver.longValue(this); }
 public final long longValue() { return resolver.longValue(this); }
 public final String description() { return resolver.description(this); }

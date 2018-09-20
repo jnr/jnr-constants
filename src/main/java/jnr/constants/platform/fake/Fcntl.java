@@ -44,7 +44,8 @@ F_ALLOCATEALL(38);
 private final long value;
 private Fcntl(long value) { this.value = value; }
 public static final long MIN_VALUE = 0L;
-public static final long MAX_VALUE = 31L;
+public static final long MAX_VALUE = 38L;
+public final int value() { return (int) value; }
 public final int intValue() { return (int) value; }
 public final long longValue() { return value; }
 public final boolean defined() { return true; }
