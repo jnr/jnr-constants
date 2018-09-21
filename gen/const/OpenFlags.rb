@@ -29,6 +29,8 @@ def gen_openflags_java(options)
       O_NOCTTY
       O_TMPFILE
       O_CLOEXEC
+      O_NOINHERIT
+      O_NDELAY
     ]
     consts.each { |c| cg.const c }
   end

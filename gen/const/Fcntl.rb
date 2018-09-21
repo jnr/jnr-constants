@@ -45,6 +45,8 @@ def gen_fcntl_java(options)
       F_WRLCK
       F_ALLOCATECONTIG
       F_ALLOCATEALL
+      F_DUPFD_CLOEXEC
+      FD_CLOEXEC
     ]
     consts.each { |c| cg.const c }
   end

@@ -9,6 +9,7 @@ def gen_sock_java(options)
       SOCK_RDM
       SOCK_SEQPACKET
       SOCK_MAXADDRLEN
+      SOCK_CLOEXEC
     ].each {|c| cg.const c}
   end
 end
