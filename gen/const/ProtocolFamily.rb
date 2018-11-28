@@ -1,7 +1,7 @@
 require_relative '../../gen/ConstGenerator'
 def gen_protocolfamily_java(options)
   ConstGenerator.new 'platform.protocol_family', options do |cg|
-    cg.include "sys/socket.h"
+    cg.include IS_WINDOWS ? "Winsock2.h" : "sys/socket.h"
     %w[
       PF_UNSPEC
       PF_LOCAL
