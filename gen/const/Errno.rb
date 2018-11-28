@@ -91,7 +91,73 @@ def gen_errno_java(options)
       ENOSTR
       EPROTO
       ETIME
+      ECHRNG
+      EL2NSYNC
+      EL3HLT
+      EL3RST
+      ELNRNG
+      EUNATCH
+      ENOCSI
+      EL2HLT
+      EBADE
+      EBADR
+      EXFULL
+      ENOANO
+      EBADRQC
+      EBADSLT
+      EDEADLOCK
+      EBFONT
+      ENONET
+      ENOPKG
+      EADV
+      ESRMNT
+      ECOMM
+      EDOTDOT
+      ENOTUNIQ
+      EBADFD
+      EREMCHG
+      ELIBACC
+      ELIBBAD
+      ELIBSCN
+      ELIBMAX
+      ELIBEXEC
+      ERESTART
+      ESTRPIPE
+      EUCLEAN
+      ENOTNAM
+      ENAVAIL
+      EISNAM
+      EREMOTEIO
+      ECANCELED
+      EKEYEXPIRED
+      EKEYREJECTED
+      EKEYREVOKED
+      EMEDIUMTYPE
+      ENOKEY
+      ENOMEDIUM
+      ENOTRECOVERABLE
+      EOWNERDEAD
+      ERFKILL
+      EAUTH
+      EBADRPC
+      EDOOFUS
+      EFTYPE
+      ENEEDAUTH
+      ENOATTR
+      ENOTSUP
+      EPROCLIM
+      EPROCUNAVAIL
+      EPROGMISMATCH
+      EPROGUNAVAIL
+      ERPCMISMATCH
+      EIPSEC
+      EHWPOISON
+      ECAPMODE
+      ENOTCAPABLE
     ]
     consts.each { |c| cg.const c }
   end
 end
+
+
+

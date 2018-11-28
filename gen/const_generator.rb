@@ -13,6 +13,10 @@ module Constantine
     attr_reader :type
     attr_accessor :min_value
 
+    CC = ENV['CC'] || 'cc'
+    CFLAGS = ENV['CFLAGS'] || ''
+    LDFLAGS = ENV['LDFLAGS'] || ''
+
     ##
     # Creates a new constant generator that uses +prefix+ as a name, and an
     # options hash.
@@ -25,6 +29,7 @@ module Constantine
 
     def initialize(prefix = nil, options = {})
       @includes = []
+      @defines = {}
       @constants = {}
       @names = []
       @prefix = prefix
@@ -93,6 +98,12 @@ module Constantine
       binary = File.join Dir.tmpdir, "rb_const_gen_bin_#{Process.pid}"
 
       Tempfile.open("#{@prefix}.const_generator") do |f|
+
+        # defines affect the includes below and what they will define, so we do them first
+        @defines.each do |key, value|
+          f.puts "#define #{key} #{value}"
+        end
+
         f.puts "#include <stdio.h>"
 
         @includes.each do |inc|
@@ -129,7 +140,7 @@ module Constantine
         f.puts "\n\treturn 0;\n}"
         f.flush
 
-        output = `gcc #{options[:cppflags]} -D_DARWIN_USE_64_BIT_INODE -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -x c -Wall -Werror #{f.path} -o #{binary} 2>&1`
+        output = `#{CC} #{options[:cppflags]} #{CFLAGS} -D_DARWIN_USE_64_BIT_INODE -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -x c -Wall -Werror #{f.path} -o #{binary} #{LDFLAGS} 2>&1`
 
         unless $?.success? then
           output = output.split("\n").map { |l| "\t#{l}" }.join "\n"
@@ -180,6 +191,10 @@ module Constantine
 
     def include(i)
       @includes << i
+    end
+
+    def define(**defs)
+      @defines.merge! defs
     end
 
   end

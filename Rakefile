@@ -13,7 +13,7 @@ ARCH = FFI::Platform::ARCH
 IS_WINDOWS = OS =~ /^win/
 
 if (IS_WINDOWS)
-  CONSTANTS = ['LastError', 'Errno', 'OpenFlags', 'Signal']
+  CONSTANTS = ['LastError', 'Errno', 'OpenFlags', 'Signal', 'AddressFamily', 'ProtocolFamily']
 else
   CONSTANTS = Dir["gen/const/*.rb"].map {|c| File.basename(c, ".rb") }
   CONSTANTS.delete('LastError') # this is Windows-specific
@@ -32,9 +32,10 @@ def gen_platform_constants(name, pkg, file_name, options = {})
     f.puts "public enum #{name} implements #{ICONSTANT} {";
     sep = nil
     comments = []
-    sorted = constants.values.reject { |c| c.value.nil? }.sort
-    min_value, max_value = sorted.first.value, sorted.last.value
-    constants.values.each_with_index do |c, i|
+
+    values = constants.values
+
+    values.each_with_index do |c, i|
       if c.value.nil?
         comments << "// #{c.name} not defined"
       else
@@ -50,28 +51,37 @@ def gen_platform_constants(name, pkg, file_name, options = {})
     end
     f.puts ";"
 
+    # Generate the string description table
+    filtered = values.reject {|cv| cv.value.nil? }
+    sorted = filtered.sort
+
+    if sorted.empty?
+      min_value = max_value = 0
+    else
+      min_value, max_value = sorted.first.value, sorted.last.value
+    end
+
     comments.each {|comm| f.puts "#{comm}" }
     f.puts "private final long value;"
     f.puts "private #{name}(long value) { this.value = value; }"
     f.puts "public static final long MIN_VALUE = #{min_value}L;"
     f.puts "public static final long MAX_VALUE = #{max_value}L;"
     f.puts ""
-    # Generate the string description table
-    unless constants.values.reject {|c| c.description.nil? }.empty?
+
+    unless filtered.empty?
       f.puts "static final class StringTable {"
       f.puts "  public static final java.util.Map<#{name}, String> descriptions = generateTable();"
       f.puts "  public static final java.util.Map<#{name}, String> generateTable() {"
       f.puts "    java.util.Map<#{name}, String> map = new java.util.EnumMap<#{name}, String>(#{name}.class);"
-      constants.values.each do |c|
-        if !c.value.nil?
-          f.puts "  map.put(#{c.name}, \"#{c.description.nil? ? c.name : c.description}\");"
-        end
+      filtered.each do |c|
+        f.puts "  map.put(#{c.name}, \"#{c.description.nil? ? c.name : c.description}\");"
       end
       f.puts "    return map;"
       f.puts "  }"
       f.puts "}"
       f.puts "public final String toString() { return StringTable.descriptions.get(this); }"
     end
+    f.puts "public final int value() { return (int) value; }"
     f.puts "public final int intValue() { return (int) value; }"
     f.puts "public final long longValue() { return value; }"
     f.puts "public final boolean defined() { return true; }"
@@ -110,6 +120,7 @@ def gen_fake_constants(name, pkg, file_name, options = {})
     f.puts "private #{name}(long value) { this.value = value; }"
     f.puts "public static final long MIN_VALUE = #{min_value}L;"
     f.puts "public static final long MAX_VALUE = #{max_value}L;"
+    f.puts "public final int value() { return (int) value; }"
     f.puts "public final int intValue() { return (int) value; }"
     f.puts "public final long longValue() { return value; }"
     f.puts "public final boolean defined() { return true; }"
@@ -138,6 +149,7 @@ def gen_xplatform_constants(name, pkg, file_name, options = {})
     else
       f.puts "ConstantResolver.getResolver(#{name}.class);"
     end
+    f.puts "public final int value() { return (int) resolver.longValue(this); }"
     f.puts "public final int intValue() { return (int) resolver.longValue(this); }"
     f.puts "public final long longValue() { return resolver.longValue(this); }"
     f.puts "public final String description() { return resolver.description(this); }"
