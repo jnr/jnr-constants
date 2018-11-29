@@ -2,6 +2,8 @@ build
 target
 nbproject/private
 dist
-/.settings/
+/.settings
+.classpath
+.project
 jnr-constants.iml
 .idea/

@@ -88,6 +88,12 @@ def gen_ioctlflags_java(options)
       TIOCPKT_NOSTOP
       TIOCPKT_DOSTOP
       TIOCPKT_IOCTL
-      TIOCSER_TEMT].each { |c| cg.const c }
+      TIOCSER_TEMT
+      TIOCM_CTS
+      TIOCM_CAR
+      TIOCM_DSR
+      TIOCM_RNG
+      TIOCM_DTR
+      TIOCM_RTS].each { |c| cg.const c }
   end
 end

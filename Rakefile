@@ -150,6 +150,8 @@ def gen_xplatform_constants(name, pkg, file_name, options = {})
       f.puts "ConstantResolver.getResolver(#{name}.class);"
     end
     f.puts "public final int value() { return (int) resolver.longValue(this); }"
+    f.puts "public final byte byteValue() { return (byte) resolver.longValue(this); }"
+    f.puts "public final short shortValue() { return (short) resolver.longValue(this); }"
     f.puts "public final int intValue() { return (int) resolver.longValue(this); }"
     f.puts "public final long longValue() { return resolver.longValue(this); }"
     f.puts "public final String description() { return resolver.description(this); }"
