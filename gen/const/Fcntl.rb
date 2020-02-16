@@ -3,6 +3,7 @@ def gen_fcntl_java(options)
   ConstGenerator.new 'platform.fcntl', options do |cg|
     cg.include "fcntl.h"
     cg.include "string.h"
+    cg.define _GNU_SOURCE: 1
     cg.min_value = 0
     cg.unknown_range=[20000, 20999]
     consts = %w[
@@ -45,6 +46,8 @@ def gen_fcntl_java(options)
       F_WRLCK
       F_ALLOCATECONTIG
       F_ALLOCATEALL
+      F_GETPIPE_SZ
+      F_SETPIPE_SZ
     ]
     consts.each { |c| cg.const c }
   end
