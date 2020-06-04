@@ -43,6 +43,8 @@ public class DefinedTest {
                 SocketLevel.values(),
                 SocketOption.values(),
                 Sysconf.values(),
+                Pathconf.values(),
+                Confstr.values(),
                 TCP.values(),
                 WaitFlags.values()
         }) for (Constant constant : AddressFamily.values()) {
