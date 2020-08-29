@@ -13,7 +13,7 @@ ARCH = FFI::Platform::ARCH
 IS_WINDOWS = OS =~ /^win/
 
 if (IS_WINDOWS)
-  CONSTANTS = ['LastError', 'Errno', 'OpenFlags', 'Signal', 'AddressFamily', 'ProtocolFamily', 'IPProto']
+  CONSTANTS = ['LastError', 'Errno', 'OpenFlags', 'Signal', 'AddressFamily', 'ProtocolFamily', 'IPProto', 'SocketMessage']
 else
   CONSTANTS = Dir["gen/const/*.rb"].map {|c| File.basename(c, ".rb") }
   CONSTANTS.delete('LastError') # this is Windows-specific
