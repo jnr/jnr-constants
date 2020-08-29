@@ -21,6 +21,28 @@ def gen_tcp_java(options)
       TCP_KEEPALIVE
       TCP_NSTATES
       TCP_RETRANSHZ
+      TCP_CORK
+      TCP_DEFER_ACCEPT
+      TCP_INFO
+      TCP_KEEPCNT
+      TCP_KEEPIDLE
+      TCP_KEEPINTVL
+      TCP_LINGER2
+      TCP_MD5SIG
+      TCP_QUICKACK
+      TCP_SYNCNT
+      TCP_WINDOW_CLAMP
+      TCP_FASTOPEN
+      TCP_CONGESTION
+      TCP_COOKIE_TRANSACTIONS
+      TCP_QUEUE_SEQ
+      TCP_REPAIR
+      TCP_REPAIR_OPTIONS
+      TCP_REPAIR_QUEUE
+      TCP_THIN_DUPACK
+      TCP_THIN_LINEAR_TIMEOUTS
+      TCP_TIMESTAMP
+      TCP_USER_TIMEOUT
     ].each {|c| cg.const c, "%lu", "(unsigned long)"}
   end
 end
