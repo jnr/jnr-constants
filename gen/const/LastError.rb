@@ -153,6 +153,6 @@ def gen_lasterror_java(options)
       WSANO_RECOVERY
       WSANO_DATA
     ]
-    consts.each { |c| cg.const(c, '%ld') }
+    consts.each { |c| cg.const(c, '%ld', '(long int)') }
   end
 end
