@@ -1,9 +1,13 @@
 require_relative '../../gen/ConstGenerator'
 def gen_tcp_java(options)
   ConstGenerator.new 'platform.tcp', options do |cg|
-    cg.include "sys/socket.h"
-    cg.include "sys/types.h"
-    cg.include "netinet/tcp.h"
+    if IS_WINDOWS
+      cg.include "Winsock2.h"
+    else
+      cg.include "sys/socket.h"
+      cg.include "sys/types.h"
+      cg.include "netinet/tcp.h"
+    end
     %w[
       TCP_MAX_SACK
       TCP_MSS
