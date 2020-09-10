@@ -85,10 +85,10 @@ public class ConstantSet extends AbstractSet<Constant> {
     }
 
     /**
-     * Gets a <tt>ConstantSet</tt>
+     * Gets a <code>ConstantSet</code>
      *
      * @param name The name of the constant set to get.
-     * @return A <tt>ConstantSet</tt>.
+     * @return A <code>ConstantSet</code>.
      */
     public static ConstantSet getConstantSet(String name) {
         ConstantSet constants = constantSets.get(name);
@@ -149,7 +149,7 @@ public class ConstantSet extends AbstractSet<Constant> {
     }
 
     /**
-     * Creates a new instance of <tt>ConstantSet</tt>
+     * Creates a new instance of <code>ConstantSet</code>
      *
      * @param enumClass The Enum subclass to load constants from.
      */
