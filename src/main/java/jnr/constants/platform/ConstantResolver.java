@@ -14,10 +14,9 @@
 
 package jnr.constants.platform;
 
-import jnr.constants.platform.*;
+import jnr.constants.PlatformConstants;
 import jnr.constants.Constant;
 import jnr.constants.ConstantSet;
-import jnr.constants.Platform;
 
 import java.lang.reflect.Array;
 import java.util.EnumSet;
@@ -100,8 +99,8 @@ class ConstantResolver<E extends Enum<E>> {
         }
 
         private void checkFake() {
-            if (!Platform.FAKE) {
-                throw new AssertionError("Constant " + name + " is not defined on " + Platform.NAME);
+            if (!PlatformConstants.FAKE) {
+                throw new AssertionError("Constant " + name + " is not defined on " + PlatformConstants.NAME);
             }
         }
     }

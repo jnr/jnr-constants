@@ -123,7 +123,7 @@ public class ConstantSet extends AbstractSet<Constant> {
      */
     @SuppressWarnings("unchecked")
     private static final Class<Enum> getEnumClass(String name) {
-        String[] prefixes = Platform.getPlatform().getPackagePrefixes();
+        String[] prefixes = PlatformConstants.getPlatform().getPackagePrefixes();
 
         for (String prefix : prefixes) {
             String fullName = prefix + "." + name;

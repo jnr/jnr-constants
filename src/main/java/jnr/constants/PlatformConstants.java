@@ -21,10 +21,10 @@ import java.util.Map;
 /**
  * Platform specific constants.
  */
-public final class Platform {
-    private static final Platform INSTANCE = new Platform();
+public final class PlatformConstants {
+    private static final PlatformConstants INSTANCE = new PlatformConstants();
 
-    public static Platform getPlatform() {
+    public static PlatformConstants getPlatform() {
         return INSTANCE;
     }
 
@@ -42,7 +42,7 @@ public final class Platform {
         }
     }
 
-    private Platform() { }
+    private PlatformConstants() { }
 
     private static String getConstantsPackageName() {
         return PackageNameResolver.PACKAGE_NAME;

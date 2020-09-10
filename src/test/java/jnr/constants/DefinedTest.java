@@ -55,16 +55,16 @@ public class DefinedTest {
 
     @Test
     public void testLangInfoUnix() throws Throwable {
-        if (!Platform.OS.equals("windows")) {
+        if (!PlatformConstants.OS.equals("windows")) {
             Assert.assertTrue(LangInfo.CODESET.defined());
         }
     }
 
     @Test
     public void testUndefinedConstant() throws Throwable {
-        if (Platform.OS.equals("linux")) {
+        if (PlatformConstants.OS.equals("linux")) {
             Assert.assertFalse(AddressFamily.AF_CHAOS.defined());
-            if (Platform.FAKE) {
+            if (PlatformConstants.FAKE) {
                 Assert.assertTrue(AddressFamily.AF_CHAOS.intValue() >= 20000);
 
             } else {
