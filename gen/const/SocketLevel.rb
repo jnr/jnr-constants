@@ -5,9 +5,11 @@ def gen_socketlevel_java(options)
       cg.include "Ws2tcpip.h"
     else
       cg.include "sys/socket.h"
-      cg.include "netinet/ip.h"
-      cg.include "netinet/tcp.h"
-      cg.include "netinet/udp.h"
+      if OS =~ /linux/
+        cg.include "netinet/ip.h"
+        cg.include "netinet/tcp.h"
+        cg.include "netinet/udp.h"
+      end
     end
     %w[
       SOL_SOCKET
