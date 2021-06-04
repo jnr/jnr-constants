@@ -163,12 +163,17 @@ def gen_xplatform_constants(name, pkg, file_name, options = {})
 end
 xplatform_files = []
 platform_files = []
+lplatform_files = []
 fake_files = []
 CONSTANTS.each do |name|
   load File.join(File.dirname(__FILE__), "gen", "const", "#{name}.rb")
   platform_files << File.join(PLATFORM_DIR, OS, "#{name}.java")
   file File.join(PLATFORM_DIR, OS, "#{name}.java") do |t|
     gen_platform_constants(name, "#{PLATFORM_PREFIX}.#{OS}", t.name)
+  end
+  lplatform_files << File.join(PLATFORM_DIR, OS, ARCH, "#{name}.java")
+  file File.join(PLATFORM_DIR, OS, ARCH, "#{name}.java") do |t|
+    gen_platform_constants(name, "#{PLATFORM_PREFIX}.#{OS}.#{ARCH}", t.name)
   end
   xplatform_files << File.join(PLATFORM_DIR, "#{name}.java")
   file File.join(PLATFORM_DIR, "#{name}.java") do |t|
@@ -181,12 +186,15 @@ CONSTANTS.each do |name|
 end
 
 task :default => :generate
-task :generate => platform_files + xplatform_files + fake_files
+task :generate => platform_files + lplatform_files + xplatform_files + fake_files
 task :regen => [ :clean, :generate ]
-task :clean => [ "clean:platform", "clean:xplatform", "clean:fake" ]
+task :clean => [ "clean:platform", "clean:platform", "clean:xplatform", "clean:fake" ]
 namespace :clean do
   task :platform do
     FileUtils.rm_f(platform_files)
+  end
+  task :lplatform do
+    FileUtils.rm_f(lplatform_files)
   end
   task :xplatform do
     FileUtils.rm_f(xplatform_files)
@@ -198,6 +206,8 @@ end
 namespace :generate do
   desc "Generate missing architecture constants"
   task :platform => platform_files
+  desc "Generate missing local architecture constants"
+  task :lplatform => lplatform_files
   desc "Generate missing platform-independent constants"
   task :xplatform => xplatform_files
   desc "Generate missing fake constants"
@@ -206,6 +216,8 @@ end
 namespace :regen do
   desc "Force regeneration of architecture constants"
   task :platform => [ "clean:platform" ] + platform_files
+  desc "Force regeneration of local architecture constants"
+  task :lplatform => [ "clean:lplatform" ] + lplatform_files
   desc "Force regeneration of platform-independent constants"
   task :xplatform => [ "clean:xplatform" ] + xplatform_files
   desc "Force regeneration of fake constants"
