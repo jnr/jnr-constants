@@ -43,6 +43,20 @@ AF_ATM(30L),
 pseudo_AF_HDRCMPLT(31L),
 AF_NETGRAPH(32L),
 // AF_AX25 not defined
+// AF_KEY not defined
+// AF_NETLINK not defined
+// AF_RDS not defined
+// AF_PPPOX not defined
+// AF_LLC not defined
+// AF_IB not defined
+AF_MPLS(34L),
+// AF_CAN not defined
+// AF_TIPC not defined
+AF_BLUETOOTH(33L),
+// AF_ALG not defined
+// AF_VSOCK not defined
+// AF_KCM not defined
+// AF_XDP not defined
 AF_MAX(36L);
 private final long value;
 private AddressFamily(long value) { this.value = value; }
@@ -89,6 +103,8 @@ static final class StringTable {
   map.put(AF_ATM, "AF_ATM");
   map.put(pseudo_AF_HDRCMPLT, "pseudo_AF_HDRCMPLT");
   map.put(AF_NETGRAPH, "AF_NETGRAPH");
+  map.put(AF_MPLS, "AF_MPLS");
+  map.put(AF_BLUETOOTH, "AF_BLUETOOTH");
   map.put(AF_MAX, "AF_MAX");
     return map;
   }

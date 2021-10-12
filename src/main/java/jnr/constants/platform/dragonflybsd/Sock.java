@@ -7,11 +7,13 @@ SOCK_DGRAM(2L),
 SOCK_RAW(3L),
 SOCK_RDM(4L),
 SOCK_SEQPACKET(5L),
+SOCK_NONBLOCK(536870912L),
+SOCK_CLOEXEC(268435456L),
 SOCK_MAXADDRLEN(255L);
 private final long value;
 private Sock(long value) { this.value = value; }
 public static final long MIN_VALUE = 1L;
-public static final long MAX_VALUE = 255L;
+public static final long MAX_VALUE = 536870912L;
 
 static final class StringTable {
   public static final java.util.Map<Sock, String> descriptions = generateTable();
@@ -22,6 +24,8 @@ static final class StringTable {
   map.put(SOCK_RAW, "SOCK_RAW");
   map.put(SOCK_RDM, "SOCK_RDM");
   map.put(SOCK_SEQPACKET, "SOCK_SEQPACKET");
+  map.put(SOCK_NONBLOCK, "SOCK_NONBLOCK");
+  map.put(SOCK_CLOEXEC, "SOCK_CLOEXEC");
   map.put(SOCK_MAXADDRLEN, "SOCK_MAXADDRLEN");
     return map;
   }
