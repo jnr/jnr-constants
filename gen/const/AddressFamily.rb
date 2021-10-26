@@ -44,6 +44,20 @@ def gen_addressfamily_java(options)
       pseudo_AF_HDRCMPLT
       AF_NETGRAPH
       AF_AX25
+      AF_KEY
+      AF_NETLINK
+      AF_RDS
+      AF_PPPOX
+      AF_LLC
+      AF_IB
+      AF_MPLS
+      AF_CAN
+      AF_TIPC
+      AF_BLUETOOTH
+      AF_ALG
+      AF_VSOCK
+      AF_KCM
+      AF_XDP
       AF_MAX
     ].each {|c| cg.const c }
   end

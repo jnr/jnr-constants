@@ -41,6 +41,19 @@ def gen_protocolfamily_java(options)
       PF_PPP
       PF_ATM
       PF_NETGRAPH
+      PF_NETLINK
+      PF_RDS
+      PF_PPPOX
+      PF_LLC
+      PF_IB
+      PF_MPLS
+      PF_CAN
+      PF_TIPC
+      PF_BLUETOOTH
+      PF_ALG
+      PF_VSOCK
+      PF_KCM
+      PF_XDP
       PF_MAX
     ].each {|c| cg.const c}
   end

@@ -40,6 +40,19 @@ PF_NETBIOS(6L),
 // PF_PPP not defined
 PF_ATM(30L),
 PF_NETGRAPH(32L),
+// PF_NETLINK not defined
+// PF_RDS not defined
+// PF_PPPOX not defined
+// PF_LLC not defined
+// PF_IB not defined
+// PF_MPLS not defined
+// PF_CAN not defined
+// PF_TIPC not defined
+PF_BLUETOOTH(33L),
+// PF_ALG not defined
+// PF_VSOCK not defined
+// PF_KCM not defined
+// PF_XDP not defined
 PF_MAX(36L);
 private final long value;
 private ProtocolFamily(long value) { this.value = value; }
@@ -84,6 +97,7 @@ static final class StringTable {
   map.put(PF_NETBIOS, "PF_NETBIOS");
   map.put(PF_ATM, "PF_ATM");
   map.put(PF_NETGRAPH, "PF_NETGRAPH");
+  map.put(PF_BLUETOOTH, "PF_BLUETOOTH");
   map.put(PF_MAX, "PF_MAX");
     return map;
   }
