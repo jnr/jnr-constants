@@ -5,6 +5,7 @@ def gen_ipv6_java(options)
     %w[
       IPV6_JOIN_GROUP
       IPV6_LEAVE_GROUP
+      IPV6_MTU_DISCOVER
       IPV6_MULTICAST_HOPS
       IPV6_MULTICAST_IF
       IPV6_MULTICAST_LOOP
@@ -19,6 +20,7 @@ def gen_ipv6_java(options)
       IPV6_PATHMTU
       IPV6_PKTINFO
       IPV6_RECVDSTOPTS
+      IPV6_RECVERR
       IPV6_RECVHOPLIMIT
       IPV6_RECVHOPOPTS
       IPV6_RECVPKTINFO
