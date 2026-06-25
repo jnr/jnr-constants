@@ -9,7 +9,7 @@
 
   <artifactId>jnr-constants</artifactId>
   <packaging>jar</packaging>
-  <version>0.10.5-SNAPSHOT</version>
+  <version>0.10.5</version>
   <name>jnr-constants</name>
   <description>A set of platform constants (e.g. errno values)</description>
   <url>http://github.com/jnr/jnr-constants</url>
@@ -45,7 +45,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13.1</version>
+      <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
