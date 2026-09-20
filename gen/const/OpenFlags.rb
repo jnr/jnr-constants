@@ -29,6 +29,7 @@ def gen_openflags_java(options)
       O_NOCTTY
       O_TMPFILE
       O_CLOEXEC
+      O_DIRECT
     ]
     consts.each { |c| cg.const c }
   end
